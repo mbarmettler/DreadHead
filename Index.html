@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>DreadHead App</title>
+    <meta charset="utf-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <link rel="stylesheet" href="Assets/css/bootstrap.min.css">	
+	
+	<script src="https://code.jquery.com/jquery-1.11.2.js"></script>	
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+	<!-- rotation stuff -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/godswearhats/jquery-ui-rotatable@1.1/jquery.ui.rotatable.css">
+	<script src="https://cdn.jsdelivr.net/gh/godswearhats/jquery-ui-rotatable@1.1/jquery.ui.rotatable.min.js"></script>
+	
+	<!-- <link rel="stylesheet" href="libs/jquery-free-transform-master/css/jquery.freetrans.css"> -->
+	<!-- <script src="libs/jquery-free-transform-master/js/Matrix.js"></script> -->
+	<!-- <script src="libs/jquery-free-transform-master/js/jquery.freetrans.js"></script> -->
+	
+	<!--jwatermark-->
+	<script src="libs/baivong-watermark-2dd6d88/dist/jquery.watermark.min.js"></script>
+	
+	<!--bs slider-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css"  type="text/css">
+	
+    <style>
+        .html,body {
+            height:600px;
+        }
+        .inputfile {
+	        width: 0.1px;
+	        height: 0.1px;
+	        opacity: 0;
+	        overflow: hidden;
+	        position: absolute;
+	        z-index: -1;
+        }
+		.slider-selection {
+			background: lightblue;;
+		}
+		.dreadCanvasItem{
+			float:left;
+			width: 110px;
+			margin-right: 10px;
+		}
+		 .cropping-area {
+		    overflow:hidden;
+			border-style: dashed;
+			border-width:2px;
+			border-color:gray;
+			max-height: 600px;
+			min-height: 200px;
+			align-items: center;  
+		 }
+		 
+		 
+		 
+		 .ui-rotatable-handle {
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+    background-image: url(rotate.png);
+    background-size: 100%;
+    left: 2px;
+    bottom: 2px;
+}
+    </style>
+    <script>
+        $(function () {
+		//todo - error with cors
+				//if ($('.imagen[src=""]')) {
+					$("#userPortrait").attr("src", "Assets/img/no-avatar.png");
+				//};
+				
+				// Instantiate a slider
+				$("#imgZoomslider").bootstrapSlider();			
+							  
+				//Image uploaded event
+				$("input:file").change(function () {
+					if (this.files && this.files[0]) {
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							$('#userPortrait').attr('src', e.target.result);
+
+							$("#userPortrait").resizable();
+							
+							//adding resizing and dragging
+							$(".ui-wrapper").draggable({
+							appendTo:"#cropping-area", scroll: false })//.find("img").resizable();
+														
+							$('.btn').removeClass("disabled");
+						}
+						reader.readAsDataURL(this.files[0]);
+					}
+				});
+				
+				//selecting dreads and add to cropping area
+				$(".list-group-item-action").on("click", function(){	
+					if(!$(this).hasClass('active'))
+					{ 		
+						$(".list-group-item-action.active").removeClass("active");
+						$(this).addClass("active");
+					}				
+					
+					var dreadImgsrc = $(this).find('img').attr('src');
+					$("#userDreads").attr("src", dreadImgsrc);
+										
+					$("#userDreads").resizable().rotatable();	
+					
+					//adding resizing and dragging
+					$(".ui-wrapper").draggable({
+					appendTo: '#cropping-area', scroll:false})//.find("img").resizable();		
+				
+				});
+					
+				
+				//render with watermark & download image locally
+				$("#dwlBtn").on("click", function(e) {
+					e.preventDefault();  //stop the browser from following
+					
+//todo generate from DIV
+					//iniialize / adding watermark
+					$('#userPortrait').watermark({
+						path: 'http://i.imgur.com/LcpZHu5.png', 
+						gravity: 'nw',
+						opacity: 1,
+						margin: 12,
+						outputType: 'png',
+						  done: function (imgURL) {						
+								$('#outputimage').attr('src', imgURL);							
+							}
+					});
+				});
+
+				//share image
+				$("#shareBtn").on("click", function (e) {
+					e.preventDefault();  //stop the browser from following
+				});
+				
+				//userportrait slider
+				$("#imgZoomslider").on("slide", function(slideEvt) {
+					//alert(slideEvt.value);					
+				});
+
+			//end of doc ready
+			});
+				
+			
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="col-md">
+            <h3>Dread-Ur-Head</h3>
+        </div>
+
+        <div class="row">
+            <div class="col-md-7">
+                <div class="jumbotron">
+                    <form id="dreadHeadPortraitForm" action="" onsubmit="return false;">
+                        <div id="croppingArea" class="cropping-area ui-widget-content">
+								<img id="userPortrait" />
+								<img id="userDreads" />
+                        </div>
+						<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="10" />
+                        <br/><br/>
+                        <input type="file" class="inputfile" id="myPortraitSelector">
+                        <label for="myPortraitSelector" class="btn btn-danger">Choose a file</label>
+                    </form>
+					<br/><br/>
+					<button class="btn btn-success disabled" id="dwlBtn">dwl img</button>
+					<button class="btn btn-primary disabled" id="shareBtn">share img</button>
+				</div>
+			<!--just for DEV testcases-->
+					<div> 
+						<img id="outputimage"/>
+					</div>
+			<!---->
+			</div>
+            <div class="col-md-3">
+                <form method="post">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <p> 
+								<img class="dreadCanvasItem" src="Assets/img/dread1.png" /> 
+								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+							</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+							<p> 
+								<img class="dreadCanvasItem" src="Assets/img/hair2.png" /> 
+								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+							</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+							<p> 
+								<img class="dreadCanvasItem" src="Assets/img/noimg.jpg" /> 
+								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+							</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+							<p> 
+								<img class="dreadCanvasItem" src="Assets/img/noimg.jpg" /> 
+								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+							</p>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
