@@ -10,6 +10,9 @@
 	<script src="https://code.jquery.com/jquery-1.11.2.js"></script>	
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	
+	<!-- jquery touch punch (mobile)-->
+	<script scrc="Assets/js/jquery.touchpunch.js"></script>
 
 	<!-- rotation stuff -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/godswearhats/jquery-ui-rotatable@1.1/jquery.ui.rotatable.css">
@@ -50,52 +53,136 @@
 		    overflow:hidden;
 			border-style: dashed;
 			border-width:2px;
-			border-color:gray;
 			max-height: 600px;
 			min-height: 200px;
 			align-items: center;  
 		 }
-		 
-		 
-		 
+		 .ui-resizable, .ui-draggable, .ui-draggable-handle {
+			border: 1px dashed lightblue;
+		 }
 		 .ui-rotatable-handle {
-    height: 16px;
-    width: 16px;
-    cursor: pointer;
-    background-image: url(rotate.png);
-    background-size: 100%;
-    left: 2px;
-    bottom: 2px;
-}
+			height: 16px;
+			width: 16px;
+			cursor: pointer;
+			background-image: url(Assets/img/rotate.png);
+			background-size: 100%;
+			left: 2px;
+			bottom: 2px;
+		}
+		.userDreads{
+			cursor: move;
+			padding:5px;
+		}		
+		.userPortrait{
+			cursor: move;
+			padding:5px;
+		}
     </style>
-    <script>
-        $(function () {
-		//todo - error with cors
-				//if ($('.imagen[src=""]')) {
-					$("#userPortrait").attr("src", "Assets/img/no-avatar.png");
-				//};
-				
+<script>
+	
+var useBlob   = false && window.URL;
+function readImage (file) {
+
+	// Create a new FileReader instance
+	// https://developer.mozilla.org/en/docs/Web/API/FileReader
+	var reader = new FileReader();
+
+	// Once a file is successfully readed:
+	reader.addEventListener("load", function () {
+
+		// At this point `reader.result` contains already the Base64 Data-URL
+		// and we've could immediately show an image using
+		// `elPreview.insertAdjacentHTML("beforeend", "<img src='"+ reader.result +"'>");`
+		// But we want to get that image's width and height px values!
+		// Since the File Object does not hold the size of an image
+		// we need to create a new image and assign it's src, so when
+		// the image is loaded we can calculate it's width and height:
+		var image  = new Image();
+		image.addEventListener("load", function () {
+			  
+			// Finally append our created image and the HTML info string to our `#preview` 
+			$("#userPortrait").append( this );		
+			
+			 var options = {
+			  rotationCenterOffset: {
+					top: 0,
+					left: 0
+				}
+			 };
+								
+			$("#userPortrait").resizable().rotatable(options);
+										
+			//adding resizing and dragging
+			$("#userPortrait").draggable({
+			appendTo:"#cropping-area", scroll: false })
+										
+			//enable functional buttons
+			$('.btn').removeClass("disabled");							
+
+			// If we set the variable `useBlob` to true:
+			// (Data-URLs can end up being really large
+			// `src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAA...........etc`
+			// Blobs are usually faster and the image src will hold a shorter blob name
+			// src="blob:http%3A//example.com/2a303acf-c34c-4d0a-85d4-2136eef7d723"
+			if (useBlob) {
+				// Free some memory for optimal performance
+				window.URL.revokeObjectURL(image.src);
+			}
+		});
+			
+		image.src = useBlob ? window.URL.createObjectURL(file) : reader.result;
+  });
+  // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
+  reader.readAsDataURL(file);  
+}
+
+        $(function () {				
 				// Instantiate a slider
 				$("#imgZoomslider").bootstrapSlider();			
-							  
+							  							  
 				//Image uploaded event
 				$("input:file").change(function () {
-					if (this.files && this.files[0]) {
-						var reader = new FileReader();
-						reader.onload = function(e) {
-							$('#userPortrait').attr('src', e.target.result);
+				
+					 // Let's store the FileList Array into a variable:
+					// https://developer.mozilla.org/en-US/docs/Web/API/FileList
+					var files  = this.files;
+					// Let's create an empty `errors` String to collect eventual errors into:
+					var errors = "";
 
-							$("#userPortrait").resizable();
-							
-							//adding resizing and dragging
-							$(".ui-wrapper").draggable({
-							appendTo:"#cropping-area", scroll: false })//.find("img").resizable();
-														
-							$('.btn').removeClass("disabled");
+					if (!files) {
+						errors += "File upload not supported by your browser.";
+					}
+
+					// Check for `files` (FileList) support and if contains at least one file:
+					if (files && files[0]) {
+
+						// Iterate over every File object in the FileList array
+						for(var i=0; i<files.length; i++) {
+
+							// Let's refer to the current File as a `file` variable
+							// https://developer.mozilla.org/en-US/docs/Web/API/File
+							var file = files[i];
+
+							// Test the `file.name` for a valid image extension:
+							// (pipe `|` delimit more image extensions)
+							// The regex can also be expressed like: /\.(png|jpe?g|gif)$/i
+							if ( (/\.(png|jpeg|jpg|gif)$/i).test(file.name) ) {
+								// SUCCESS! It's an image!
+								// Send our image `file` to our `readImage` function!
+								readImage( file ); 
+							}
+							else {
+							errors += file.name +" Unsupported Image extension\n";  
+							}
 						}
-						reader.readAsDataURL(this.files[0]);
+					}
+
+					// Notify the user for any errors (i.e: try uploading a .txt file)
+					if (errors) {
+						alert(errors); 
 					}
 				});
+				
 				
 				//selecting dreads and add to cropping area
 				$(".list-group-item-action").on("click", function(){	
@@ -105,17 +192,26 @@
 						$(this).addClass("active");
 					}				
 					
-					var dreadImgsrc = $(this).find('img').attr('src');
-					$("#userDreads").attr("src", dreadImgsrc);
-										
-					$("#userDreads").resizable().rotatable();	
+					var dreadImgsrc = $(this).find('img');
+					dreadImgsrc.removeClass();
 					
-					//adding resizing and dragging
-					$(".ui-wrapper").draggable({
+					$("#userDreads").append(dreadImgsrc);
+								
+								 var options = {
+								  rotationCenterOffset: {
+										top: 0,
+										left: 0
+									}
+								 };
+								
+					//adding resizing								
+					$("#userDreads").resizable().rotatable(options);	
+					            
+					//adding dragging
+					$("#userDreads").draggable({
 					appendTo: '#cropping-area', scroll:false})//.find("img").resizable();		
 				
-				});
-					
+				});					
 				
 				//render with watermark & download image locally
 				$("#dwlBtn").on("click", function(e) {
@@ -147,8 +243,6 @@
 
 			//end of doc ready
 			});
-				
-			
     </script>
 </head>
 
@@ -162,9 +256,9 @@
             <div class="col-md-7">
                 <div class="jumbotron">
                     <form id="dreadHeadPortraitForm" action="" onsubmit="return false;">
-                        <div id="croppingArea" class="cropping-area ui-widget-content">
-								<img id="userPortrait" />
-								<img id="userDreads" />
+                        <div id="croppingArea" class="cropping-area ui-widget-content" orientation="horizontal">
+							<div id="userPortrait" class="userPortrait"></div>
+							<div id="userDreads" class="userDreads"></div>
                         </div>
 						<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="10" />
                         <br/><br/>
@@ -172,13 +266,13 @@
                         <label for="myPortraitSelector" class="btn btn-danger">Choose a file</label>
                     </form>
 					<br/><br/>
-					<button class="btn btn-success disabled" id="dwlBtn">dwl img</button>
-					<button class="btn btn-primary disabled" id="shareBtn">share img</button>
+					<button class="btn btn-success disabled" id="dwlBtn">save</button>
+					<button class="btn btn-primary disabled" id="shareBtn">share</button>
 				</div>
 			<!--just for DEV testcases-->
-					<div> 
-						<img id="outputimage"/>
-					</div>
+			<div> 
+				<img id="outputimage"/>
+			</div>
 			<!---->
 			</div>
             <div class="col-md-3">
