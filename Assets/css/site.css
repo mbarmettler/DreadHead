@@ -1,0 +1,47 @@
+.html,body {
+	height:600px;
+}
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+.slider-selection {
+	background: lightblue;;
+}
+.dreadCanvasItem{
+	float:left;
+	width: 110px;
+	margin-right: 10px;
+}
+ .cropping-area {
+	overflow:hidden;
+	border-style: dashed;
+	border-width:2px;
+	max-height: 600px;
+	min-height: 200px;
+	align-items: center;  
+ }
+ .ui-resizable, .ui-draggable, .ui-draggable-handle {
+	border: 1px dashed lightblue;
+ }
+ .ui-rotatable-handle {
+	height: 16px;
+	width: 16px;
+	cursor: pointer;
+	background-image: url(../img/rotate.png);
+	background-size: 100%;
+	left: 2px;
+	bottom: 2px;
+}
+.userDreads{
+	cursor: move;
+	padding:5px;
+}		
+.userPortrait{
+	cursor: move;
+	padding:5px;
+}

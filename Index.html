@@ -29,55 +29,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css"  type="text/css">
 	
-    <style>
-        .html,body {
-            height:600px;
-        }
-        .inputfile {
-	        width: 0.1px;
-	        height: 0.1px;
-	        opacity: 0;
-	        overflow: hidden;
-	        position: absolute;
-	        z-index: -1;
-        }
-		.slider-selection {
-			background: lightblue;;
-		}
-		.dreadCanvasItem{
-			float:left;
-			width: 110px;
-			margin-right: 10px;
-		}
-		 .cropping-area {
-		    overflow:hidden;
-			border-style: dashed;
-			border-width:2px;
-			max-height: 600px;
-			min-height: 200px;
-			align-items: center;  
-		 }
-		 .ui-resizable, .ui-draggable, .ui-draggable-handle {
-			border: 1px dashed lightblue;
-		 }
-		 .ui-rotatable-handle {
-			height: 16px;
-			width: 16px;
-			cursor: pointer;
-			background-image: url(Assets/img/rotate.png);
-			background-size: 100%;
-			left: 2px;
-			bottom: 2px;
-		}
-		.userDreads{
-			cursor: move;
-			padding:5px;
-		}		
-		.userPortrait{
-			cursor: move;
-			padding:5px;
-		}
-    </style>
+	<!--own style-->
+	<link rel="stylesheet" href="Assets/css/site.css" type="text/css">	
 <script>
 	
 var useBlob   = false && window.URL;
@@ -191,18 +144,24 @@ function readImage (file) {
 						$(".list-group-item-action.active").removeClass("active");
 						$(this).addClass("active");
 					}				
-					
-					var dreadImgsrc = $(this).find('img');
+										
+					var dreadImgsrc = $(this).find('img').clone();
 					dreadImgsrc.removeClass();
 					
+					//if already selected, remove dread img
+					if($("#userDreads").has('img').length > 0) {
+						$("#userDreads").children("img").remove();
+					}
+
+					//add new dread selection
 					$("#userDreads").append(dreadImgsrc);
 								
-								 var options = {
-								  rotationCenterOffset: {
-										top: 0,
-										left: 0
-									}
-								 };
+					var options = {
+					  rotationCenterOffset: {
+							top: 0,
+							left: 0
+						}
+					};
 								
 					//adding resizing								
 					$("#userDreads").resizable().rotatable(options);	
@@ -292,7 +251,7 @@ function readImage (file) {
                         </a>
                         <a href="#" class="list-group-item list-group-item-action">
 							<p> 
-								<img class="dreadCanvasItem" src="Assets/img/noimg.jpg" /> 
+								<img class="dreadCanvasItem" src="Assets/img/must1.png" /> 
 								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
 							</p>
                         </a>
@@ -306,7 +265,6 @@ function readImage (file) {
                 </form>
             </div>
         </div>
-
     </div>
 </body>
 </html>
