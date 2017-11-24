@@ -25,7 +25,13 @@
 	min-height: 200px;
 	align-items: center;  
  }
- .ui-resizable, .ui-draggable, .ui-draggable-handle {
+ 
+ /*using for DEV purpose to show resizable, draggable, rotable element*/
+ /* .ui-resizable, .ui-draggable, .ui-draggable-handle { */
+	/* border: 1px dashed lightblue; */
+ /* } */
+ 
+ .ui-resizable {
 	border: 1px dashed lightblue;
  }
  .ui-rotatable-handle {
