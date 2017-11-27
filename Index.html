@@ -40,7 +40,9 @@
 	<!--own style-->
 	<link rel="stylesheet" href="Assets/css/site.css" type="text/css">	
 <script>
-	
+
+var dreadSelectionArray = ["dario.png","claufrontsmall2.png","clauhigh3.png","dread1.png", "elen4.png"];
+
 var useBlob   = false && window.URL;
 function readImage (file) {
 
@@ -101,166 +103,179 @@ function readImage (file) {
   reader.readAsDataURL(file);  
 }
 
-        $(function () {				
-				// Instantiate a slider
-				$("#imgZoomslider").bootstrapSlider();			
-							  							  
-				//Image uploaded event
-				$("input:file").change(function () {
-				
-					 // Let's store the FileList Array into a variable:
-					// https://developer.mozilla.org/en-US/docs/Web/API/FileList
-					var files  = this.files;
-					// Let's create an empty `errors` String to collect eventual errors into:
-					var errors = "";
+/////////////////// Document Ready /////////////////////
 
-					if (!files) {
-						errors += "File upload not supported by your browser.";
+$(function () {			
+		
+		//init DreadSelectionList
+		initializeDreadSelectionList(dreadSelectionArray);		
+	
+		// Instantiate a slider
+		$("#imgZoomslider").bootstrapSlider();			
+												  
+		//Image uploaded event
+		$("input:file").change(function () {
+		
+			 // Let's store the FileList Array into a variable:
+			// https://developer.mozilla.org/en-US/docs/Web/API/FileList
+			var files  = this.files;
+			// Let's create an empty `errors` String to collect eventual errors into:
+			var errors = "";
+
+			if (!files) {
+				errors += "File upload not supported by your browser.";
+			}
+
+			// Check for `files` (FileList) support and if contains at least one file:
+			if (files && files[0]) {
+
+				// Iterate over every File object in the FileList array
+				for(var i=0; i<files.length; i++) {
+
+					// Let's refer to the current File as a `file` variable
+					// https://developer.mozilla.org/en-US/docs/Web/API/File
+					var file = files[i];
+
+					// Test the `file.name` for a valid image extension:
+					// (pipe `|` delimit more image extensions)
+					// The regex can also be expressed like: /\.(png|jpe?g|gif)$/i
+					if ( (/\.(png|jpeg|jpg|gif)$/i).test(file.name) ) {
+						// SUCCESS! It's an image!
+						// Send our image `file` to our `readImage` function!
+						readImage( file ); 
 					}
-
-					// Check for `files` (FileList) support and if contains at least one file:
-					if (files && files[0]) {
-
-						// Iterate over every File object in the FileList array
-						for(var i=0; i<files.length; i++) {
-
-							// Let's refer to the current File as a `file` variable
-							// https://developer.mozilla.org/en-US/docs/Web/API/File
-							var file = files[i];
-
-							// Test the `file.name` for a valid image extension:
-							// (pipe `|` delimit more image extensions)
-							// The regex can also be expressed like: /\.(png|jpe?g|gif)$/i
-							if ( (/\.(png|jpeg|jpg|gif)$/i).test(file.name) ) {
-								// SUCCESS! It's an image!
-								// Send our image `file` to our `readImage` function!
-								readImage( file ); 
-							}
-							else {
-							errors += file.name +" Unsupported Image extension\n";  
-							}
-						}
+					else {
+					errors += file.name +" Unsupported Image extension\n";  
 					}
+				}
+			}
 
-					// Notify the user for any errors (i.e: try uploading a .txt file)
-					if (errors) {
-						alert(errors); 
-					}
-				});
-				
-				
-				//selecting dreads and add to cropping area
-				$(".list-group-item-action").on("click", function(){	
-					if(!$(this).hasClass('active'))
-					{ 		
-						$(".list-group-item-action.active").removeClass("active");
-						$(this).addClass("active");
-					}				
-										
-					var dreadImgsrc = $(this).find('img').clone();
-					dreadImgsrc.removeClass();
-					
-					//if already selected, remove dread img
-					if($("#userDreads").has('img').length > 0) {
-						$("#userDreads").empty();
-					}
-
-					//add new dread selection
-					$("#userDreads").append(dreadImgsrc);
+			// Notify the user for any errors (i.e: try uploading a .txt file)
+			if (errors) {
+				alert(errors); 
+			}
+		});
+		
+		
+		//selecting dreads and add to cropping area
+		$(".list-group-item-action").on("click", function(){	
+			if(!$(this).hasClass('active'))
+			{ 		
+				$(".list-group-item-action.active").removeClass("active");
+				$(this).addClass("active");
+			}				
 								
-					var dreadwidth = $("#userDreads").width();
-					var dreadheight = $("#userDreads").height();
-					
-					var options = {
-					  rotationCenterOffset: {
-							top: 0,
-							left: 0
-						}
-					};
-								
-					//adding img editing options								
-					$("#userDreads").rotatable(options);	
-					$("#userDreads").find("img").resizable();
+			var dreadImgsrc = $(this).find('img').clone();
+			dreadImgsrc.removeClass();
+			
+			//if already selected, remove dread img
+			if($("#userDreads").has('img').length > 0) {
+				$("#userDreads").empty();
+			}
+
+			//add new dread selection
+			$("#userDreads").append(dreadImgsrc);
+						
+			var dreadwidth = $("#userDreads").width();
+			var dreadheight = $("#userDreads").height();
+			
+			var options = {
+			  rotationCenterOffset: {
+					top: 0,
+					left: 0
+				}
+			};
+						
+			//adding img editing options								
+			$("#userDreads").rotatable(options);	
+			$("#userDreads").find("img").resizable();
 //todo activate rotatable after changing dread			
 
-					
-					//adding dragging
-					$("#userDreads").draggable({ width: dreadwidth, height: dreadheight,
-					appendTo: '#cropping-area', scroll:false});	
-				
-				});					
-				
-				//render with watermark & download image locally
-				$("#dwlBtn").on("click", function(e) {
-					e.preventDefault();  //stop the browser from following
-					
+			
+			//adding dragging
+			$("#userDreads").draggable({ width: dreadwidth, height: dreadheight,
+			appendTo: '#cropping-area', scroll:false});	
+		
+		});					
+		
+		//render with watermark & download image locally
+		$("#dwlBtn").on("click", function(e) {
+			e.preventDefault();  //stop the browser from following
+			
 //todo generate from DIV
 //todo do we have a smaller logo for watermarking?
 //path: 'http://i.imgur.com/LcpZHu5.png',
-					//iniialize / adding watermark
-					$('#userPortrait').find("img").watermark({
-						path: "http://i.imgur.com/LcpZHu5.png", 
-						gravity: 'nw',
-						opacity: 1,
-						margin: 12,
-						outputType: 'png',
-						  done: function (imgURL) {						
-								$('#outputimage').attr('src', imgURL);							
-							}
-					});
-					
-					html2canvas($("#cropping-area"), {
-					onrendered: function(canvas) {
-						theCanvas = canvas;
-						document.body.appendChild(canvas);
-
-						// Convert and download as image 
-						Canvas2Image.saveAsPNG(canvas); 
-						$("#img-out").append(canvas);
-						// Clean up 
-						//document.body.removeChild(canvas);
+			//iniialize / adding watermark
+			$('#userPortrait').find("img").watermark({
+				path: "http://i.imgur.com/LcpZHu5.png", 
+				gravity: 'nw',
+				opacity: 1,
+				margin: 12,
+				outputType: 'png',
+				  done: function (imgURL) {						
+						$('#outputimage').attr('src', imgURL);							
 					}
-				});
-					 
-           
-				});
-
-				//share image
-				$("#shareBtn").on("click", function (e) {
-					e.preventDefault();  //stop the browser from following
-					 
-				});
-				
-				//update slider
-				$("#imgZoomslider").on("slide", function(slideEvt) {
-					//alert(slideEvt.value);					
-				});
-
-			//end of doc ready
 			});
-    </script>
+			
+			html2canvas($("#cropping-area"), {
+			onrendered: function(canvas) {
+				theCanvas = canvas;
+				document.body.appendChild(canvas);
+
+				// Convert and download as image 
+				Canvas2Image.saveAsPNG(canvas); 
+				$("#img-out").append(canvas);
+				// Clean up 
+				//document.body.removeChild(canvas);
+			}
+		});
+			 
+   
+		});
+
+		//initialize DreadSelectionList
+		function initializeDreadSelectionList(dreadSelectionArray){
+			dreadSelectionArray.forEach(function(item, index, array) {
+			  $("#dreadSelectionList").append('<a href="#" class="list-group-item list-group-item-action"><img class="dreadCanvasItem" src="Assets/img/dreads/'+item+'"/></a>');
+			});			
+		};
+		
+		//share image
+		$("#shareBtn").on("click", function (e) {
+			e.preventDefault();  //stop the browser from following
+			 
+		});
+		
+		//update slider
+		$("#imgZoomslider").on("slide", function(slideEvt) {
+			//alert(slideEvt.value);					
+		});
+
+	//end of doc ready
+	});
+</script>
 </head>
 
 <body>
     <div class="container-fluid">
 		
         <div class="col-md">
-            <h3>Dread-Ur-Head</h3>
+            <img class="dreadArtLogo"/>
         </div>
 
         <div class="row">
             <div class="col-md-7">
                 <div class="jumbotron">
-                    <form id="dreadHeadPortraitForm" action="" onsubmit="return false;">
-                        <div id="croppingArea" class="cropping-area ui-widget-content" orientation="horizontal">
+					<div class="row">
+                        <canvas id="croppingArea" class="cropping-area ui-widget-content" orientation="horizontal">
 							<div id="userPortrait" class="userPortrait"></div>
 							<div id="userDreads" class="userDreads"></div>
-                        </div>
-						<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="10" />
-                        <br/><br/>
-                        <input type="file" class="inputfile" id="myPortraitSelector">
-                        <label for="myPortraitSelector" class="btn btn-danger">Choose a file</label>
-                    </form>
+                        </canvas>
+					</div>
+					<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="10" />
+					<br/><br/>
+					<input type="file" class="inputfile" id="myPortraitSelector">
+					<label for="myPortraitSelector" class="btn btn-danger">Choose a file</label>
 					<br/><br/>
 					<button class="btn btn-success disabled" id="dwlBtn">save</button>
 					<a href="#shareModal" role="button" class="btn btn-primary disabled" data-toggle="modal" id="shareBtn">share</a>
@@ -288,32 +303,7 @@ function readImage (file) {
 			</div>
             <div class="col-md-3">
                 <form method="post">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <p> 
-								<img class="dreadCanvasItem" src="Assets/img/dread1.png" /> 
-								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-							</p>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-							<p> 
-								<img class="dreadCanvasItem" src="Assets/img/hair2.png" /> 
-								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-							</p>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-							<p> 
-								<img class="dreadCanvasItem" src="Assets/img/must1.png" /> 
-								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-							</p>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-							<p> 
-								<img class="dreadCanvasItem" src="Assets/img/noimg.jpg" /> 
-								Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-							</p>
-                        </a>
-                    </div>
+                    <div id="dreadSelectionList" class="list-group"/>
                 </form>
             </div>
    

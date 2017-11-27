@@ -1,6 +1,20 @@
 .html,body {
 	height:600px;
 }
+
+@media (min-width: 576px){
+	.jumbotron {
+		padding: 1rem 2rem;
+	}
+	.list-group-item {
+		float: left;
+	}	
+}
+
+.dreadArtLogo{
+	background: url(../img/corp/dreadArt-big.png) no-repeat 50%;
+}
+
 .inputfile {
 	width: 0.1px;
 	height: 0.1px;
@@ -17,13 +31,13 @@
 	width: 110px;
 	margin-right: 10px;
 }
- .cropping-area {
-	overflow:hidden;
+.cropping-area {
+	overflow: hidden;
 	border-style: dashed;
-	border-width:2px;
+	border-width: 2px;
 	max-height: 600px;
-	min-height: 200px;
-	align-items: center;  
+	min-height: 300px;
+	flex: 1;
  }
  
  /*using for DEV purpose to show resizable, draggable, rotable element*/
