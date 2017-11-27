@@ -31,7 +31,7 @@
 	<script src="libs/baivong-watermark-2dd6d88/dist/jquery.watermark.min.js"></script>
 	
 	<!-- html2canvasK -->
-	<script src="libs/html2canvas.js"></script>
+	<script src="libs/jcanvas.min.js"></script>
 	
 	<!--bs slider-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
@@ -41,9 +41,9 @@
 	<link rel="stylesheet" href="Assets/css/site.css" type="text/css">	
 <script>
 
-var dreadSelectionArray = ["dario.png","claufrontsmall2.png","clauhigh3.png","dread1.png", "elen4.png"];
+var dreadSelectionArray = ["1.png","2.png","3.png","4.png", "5.png", "6.gif", "7.png", "8.png"];
 
-var useBlob   = false && window.URL;
+var useBlob = true && window.URL;
 function readImage (file) {
 
 	// Create a new FileReader instance
@@ -61,27 +61,20 @@ function readImage (file) {
 		// we need to create a new image and assign it's src, so when
 		// the image is loaded we can calculate it's width and height:
 		var image  = new Image();
+		
 		image.addEventListener("load", function () {
 			  
 			// Finally append our created image and the HTML info string to our `#preview` 
-			$("#userPortrait").append( this );		
-			
-			 var options = {
-			  rotationCenterOffset: {
-					top: 0,
-					left: 0
-				}
-			 };
-						
-			var portraitwidth = $("#userPortrait").width();
-			var portraitheight = $("#userPortrait").height();
-			
-			$("#userPortrait").rotatable(options);
-			$("#userPortrait").find("img").resizable()
-										
+			$("#croppingArea").append(this);		
+ 
+			var userportrait = $("#croppingArea").find('img');
+			userportrait.prop("id", "userPortrait");	
+
+			var portraitwidth = userportrait.width();
+			var portraitheight = userportrait.height();
+													
 			//adding resizing and dragging
-			$("#userPortrait").draggable({ width: portraitwidth, height: portraitheight,
-			appendTo:"#cropping-area", scroll: false })
+			<!-- $("#userPortrait").draggable({ width: portraitwidth, height: portraitheight, appendTo:"#cropping-area", scroll: false }) -->
 										
 			//enable functional buttons
 			$('.btn').removeClass("disabled");							
@@ -164,20 +157,16 @@ $(function () {
 				$(".list-group-item-action.active").removeClass("active");
 				$(this).addClass("active");
 			}				
-								
+					
+			//remove existing dread img
+			$("#userDreads").remove();
+					
 			var dreadImgsrc = $(this).find('img').clone();
 			dreadImgsrc.removeClass();
-			
-			//if already selected, remove dread img
-			if($("#userDreads").has('img').length > 0) {
-				$("#userDreads").empty();
-			}
+			dreadImgsrc.prop("id", "userDreads");	
 
 			//add new dread selection
-			$("#userDreads").append(dreadImgsrc);
-						
-			var dreadwidth = $("#userDreads").width();
-			var dreadheight = $("#userDreads").height();
+			$("#croppingArea").append(dreadImgsrc);						
 			
 			var options = {
 			  rotationCenterOffset: {
@@ -189,12 +178,9 @@ $(function () {
 			//adding img editing options								
 			$("#userDreads").rotatable(options);	
 			$("#userDreads").find("img").resizable();
-//todo activate rotatable after changing dread			
-
 			
 			//adding dragging
-			$("#userDreads").draggable({ width: dreadwidth, height: dreadheight,
-			appendTo: '#cropping-area', scroll:false});	
+			$("#userDreads").draggable({ appendTo: '#cropping-area', scroll:false});	
 		
 		});					
 		
@@ -217,29 +203,34 @@ $(function () {
 					}
 			});
 			
-			html2canvas($("#cropping-area"), {
-			onrendered: function(canvas) {
-				theCanvas = canvas;
-				document.body.appendChild(canvas);
+			var dread = $("#userDreads").find("img").context.currentSrc;
+			var portrait = $("#userPortrait").attr('src');
+					
+			 $("#canvas").drawImage({
+				  source: portrait,
+				  x: 180, y: 150,
+				})
+				.drawImage({
+					source: dread,
+				  x: 150, y: 200,
+				});
+			
+			<!-- html2canvas($("#cropping-area"), { -->
+			<!-- onrendered: function(canvas) { -->
+				<!-- theCanvas = canvas; -->
+				<!-- document.body.appendChild(canvas); -->
 
-				// Convert and download as image 
-				Canvas2Image.saveAsPNG(canvas); 
-				$("#img-out").append(canvas);
-				// Clean up 
-				//document.body.removeChild(canvas);
-			}
-		});
+				<!-- // Convert and download as image  -->
+				<!-- Canvas2Image.saveAsPNG(canvas);  -->
+				<!-- $("#img-out").append(canvas); -->
+				<!-- // Clean up  -->
+				<!-- //document.body.removeChild(canvas); -->
+			<!-- } -->
+		<!-- }); -->
 			 
    
 		});
 
-		//initialize DreadSelectionList
-		function initializeDreadSelectionList(dreadSelectionArray){
-			dreadSelectionArray.forEach(function(item, index, array) {
-			  $("#dreadSelectionList").append('<a href="#" class="list-group-item list-group-item-action"><img class="dreadCanvasItem" src="Assets/img/dreads/'+item+'"/></a>');
-			});			
-		};
-		
 		//share image
 		$("#shareBtn").on("click", function (e) {
 			e.preventDefault();  //stop the browser from following
@@ -250,6 +241,17 @@ $(function () {
 		$("#imgZoomslider").on("slide", function(slideEvt) {
 			//alert(slideEvt.value);					
 		});
+		
+/////////end events////////////		
+		
+		
+		//initialize DreadSelectionList
+		function initializeDreadSelectionList(dreadSelectionArray){
+			dreadSelectionArray.forEach(function(item, index, array) {
+			  $("#dreadSelectionList").append('<a href="#" class="list-group-item list-group-item-action"><img class="dreadCanvasItem" src="Assets/img/dreads/'+item+'"/></a>');
+			});			
+		};	
+
 
 	//end of doc ready
 	});
@@ -258,56 +260,33 @@ $(function () {
 
 <body>
     <div class="container-fluid">
-		
-        <div class="col-md">
-            <img class="dreadArtLogo"/>
-        </div>
-
-        <div class="row">
-            <div class="col-md-7">
+		<div class="row">
+			<div class="col-md-1">	
+				<img src="Assets/img/corp/logo.png" width="90%"/>
+				<!-- <div class="dreadArtLogo"/> -->
+			</div>
+		</div>
+		<div class="row">
+            <div class="col-md-8">
                 <div class="jumbotron">
-					<div class="row">
-                        <canvas id="croppingArea" class="cropping-area ui-widget-content" orientation="horizontal">
-							<div id="userPortrait" class="userPortrait"></div>
-							<div id="userDreads" class="userDreads"></div>
-                        </canvas>
-					</div>
+					<div id="croppingArea" class="cropping-area"></div>
 					<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="10" />
 					<br/><br/>
-					<input type="file" class="inputfile" id="myPortraitSelector">
+					<input type="file" class="inputfile" id="myPortraitSelector"/>
 					<label for="myPortraitSelector" class="btn btn-danger">Choose a file</label>
 					<br/><br/>
 					<button class="btn btn-success disabled" id="dwlBtn">save</button>
 					<a href="#shareModal" role="button" class="btn btn-primary disabled" data-toggle="modal" id="shareBtn">share</a>
 				</div>
-			<!--just for DEV testcases-->
-			<div> 
-				<img id="outputimage"/>
+				
+				<!--just for DEV testcases-->
+				<canvas id="canvas" style="border:1px solid red" />
 			</div>
-			      	<!-- Modal for sharing-->
-<div id="shareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Modal header</h3>
-  </div>
-  <div class="modal-body">
-    <p>One fine body…</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <button class="btn btn-primary">Save changes</button>
-  </div>
-</div>
-			
-			<!---->
-			</div>
-            <div class="col-md-3">
-                <form method="post">
-                    <div id="dreadSelectionList" class="list-group"/>
-                </form>
-            </div>
-   
+			<div class="col-md-2">                
+				<div id="dreadSelectionList" class="list-inline"/>
+            </div>   			
 		</div>
-    </div>
+	</div>
+  <!-- end of container -->
 </body>
 </html>
