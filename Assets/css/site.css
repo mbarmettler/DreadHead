@@ -3,16 +3,16 @@
 }
 
 @media (min-width: 576px){
-	.jumbotron {
-		padding: 1rem 2rem;
-	}
-	.list-group-item {
-		float: left;
-	}	
+	
+}
+
+.jumbotron {
+	padding: 1rem 1.5rem !important
 }
 
 .dreadArtLogo{
-	background: url(../img/corp/dreadArt-big.png) no-repeat 50%;
+	/* background: url(../img/corp/dreadArt-big.png) no-repeat 50%; */
+	background-image: url(../img/corp/logo.png);
 }
 
 .inputfile {
@@ -26,42 +26,64 @@
 .slider-selection {
 	background: lightblue;;
 }
-.dreadCanvasItem{
-	float:left;
-	width: 110px;
-	margin-right: 10px;
-}
-.cropping-area {
-	overflow: hidden;
+.cropping-area {    
+	overflow: overlay;
+	padding-top: 40px;
+    padding-bottom: 40px;
 	border-style: dashed;
 	border-width: 2px;
-	max-height: 600px;
+	border-color:lightgray;
+	background: white;
 	min-height: 300px;
 	flex: 1;
+	display: flex;
+    align-items: center;
+    justify-content: center;
  }
- 
+
+ #userDreads{
+	cursor:move;
+	width:40%;
+	z-index:2;
+}
+#userPortrait{
+	position: relative;
+	height: 100%;
+}
+
  /*using for DEV purpose to show resizable, draggable, rotable element*/
  /* .ui-resizable, .ui-draggable, .ui-draggable-handle { */
 	/* border: 1px dashed lightblue; */
  /* } */
- 
- .ui-resizable {
+.ui-draggable:hover {
 	border: 1px dashed lightblue;
  }
  .ui-rotatable-handle {
-	height: 16px;
-	width: 16px;
+	height: 32px;
+	width: 32px;
 	cursor: pointer;
 	background-image: url(../img/rotate.png);
 	background-size: 100%;
 	left: 2px;
 	bottom: 2px;
 }
-.userDreads{
-	cursor: move;
-	padding:5px;
-}		
-.userPortrait{
-	cursor: move;
-	padding:5px;
+.ui-resizable-handle
+{
+	height: 32px;
+	width: 32px;
+	background-image: url(../img/resize.png);
+}
+.ui-widget-content .ui-icon.ui-icon-gripsmall-diagonal-se {
+	width: 32px;
+	height: 32px;
+	background: url(../img/resize.png) left top no-repeat;
+}
+
+.label-outline-default {
+	border-radius: 10px;
+	border: 3px solid #BADA55;
+	color: #BADA55;
+}
+h3 {
+	margin-bottom: 20px !important;
 }

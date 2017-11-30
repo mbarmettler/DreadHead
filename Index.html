@@ -3,23 +3,26 @@
 <head>
     <title>DreadHead App</title>
     <meta charset="utf-8" />
-	 <meta name="viewport" content="width=device-width, initial-scale=1">
-	 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> 
-	
-    <link rel="stylesheet" href="Assets/css/bootstrap.min.css">	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Dread-ur-head app shows you how it would look like, if you would have dreads.">	
+	<meta name="developper" content="Mike Barmettler">
 
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> 
 	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 	<script src="https://code.jquery.com/jquery-1.11.2.js"></script>	
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	
-	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
 	<!-- jquery touch punch (mobile)-->
 	<script scrc="Assets/js/jquery.touchpunch.js"></script>
 
-	<!-- rotation stuff -->
+	<!-- rotation resources -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/godswearhats/jquery-ui-rotatable@1.1/jquery.ui.rotatable.css">
 	<script src="https://cdn.jsdelivr.net/gh/godswearhats/jquery-ui-rotatable@1.1/jquery.ui.rotatable.min.js"></script>
 	
@@ -28,22 +31,29 @@
 	<!-- <script src="libs/jquery-free-transform-master/js/jquery.freetrans.js"></script> -->
 	
 	<!--jwatermark-->
-	<script src="libs/baivong-watermark-2dd6d88/dist/jquery.watermark.min.js"></script>
+	<!-- <script src="libs/baivong-watermark-2dd6d88/dist/jquery.watermark.min.js"></script> -->
 	
 	<!-- html2canvasK -->
 	<script src="libs/jcanvas.min.js"></script>
-	
+
 	<!--bs slider-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css"  type="text/css">
 	
-	<!--own style-->
+	<!--app style-->
 	<link rel="stylesheet" href="Assets/css/site.css" type="text/css">	
+
+	<style>
+		.special-header {
+			margin-top: -42px;;
+		}
+	</style>
 <script>
 
+//specify Dread Hair images on web folder /img/dreads/
 var dreadSelectionArray = ["1.png","2.png","3.png","4.png", "5.png", "6.gif", "7.png", "8.png"];
 
-var useBlob = true && window.URL;
+var useBlob = false && window.URL;
 function readImage (file) {
 
 	// Create a new FileReader instance
@@ -74,7 +84,7 @@ function readImage (file) {
 			var portraitheight = userportrait.height();
 													
 			//adding resizing and dragging
-			<!-- $("#userPortrait").draggable({ width: portraitwidth, height: portraitheight, appendTo:"#cropping-area", scroll: false }) -->
+			//$("#userPortrait").draggable({ width: portraitwidth, height: portraitheight, appendTo:"#cropping-area", scroll: false })
 										
 			//enable functional buttons
 			$('.btn').removeClass("disabled");							
@@ -151,16 +161,16 @@ $(function () {
 		
 		
 		//selecting dreads and add to cropping area
-		$(".list-group-item-action").on("click", function(){	
+		$(".thumbnail").on("click", function(){	
 			if(!$(this).hasClass('active'))
 			{ 		
-				$(".list-group-item-action.active").removeClass("active");
+				$(".thumbnail").removeClass("active");
 				$(this).addClass("active");
-			}				
+			}									
+			
+		 	$(".ui-wrapper img").remove();
 					
-			//remove existing dread img
-			$("#userDreads").remove();
-					
+			//prepare dread img from selectionlist
 			var dreadImgsrc = $(this).find('img').clone();
 			dreadImgsrc.removeClass();
 			dreadImgsrc.prop("id", "userDreads");	
@@ -175,60 +185,46 @@ $(function () {
 				}
 			};
 						
-			//adding img editing options								
-			$("#userDreads").rotatable(options);	
-			$("#userDreads").find("img").resizable();
-			
-			//adding dragging
-			$("#userDreads").draggable({ appendTo: '#cropping-area', scroll:false});	
-		
+			//adding img editing options				
+			dreadImgsrc.resizable();
+//todo change resize image
+					// handle: "ne"
+					// handles: { 'e': '.ui-resizable-e', 's': '.ui-resizable-s', 'se': '.ui-resizable-se'}
+					  		   
+  			dreadImgsrc.parent().rotatable(options);
+			dreadImgsrc.parent().css("z-index", 1);
+			dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:false});		
+
+			//place rotatable icon on top left
+			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
 		});					
 		
 		//render with watermark & download image locally
 		$("#dwlBtn").on("click", function(e) {
 			e.preventDefault();  //stop the browser from following
-			
-//todo generate from DIV
-//todo do we have a smaller logo for watermarking?
-//path: 'http://i.imgur.com/LcpZHu5.png',
-			//iniialize / adding watermark
-			$('#userPortrait').find("img").watermark({
-				path: "http://i.imgur.com/LcpZHu5.png", 
-				gravity: 'nw',
-				opacity: 1,
-				margin: 12,
-				outputType: 'png',
-				  done: function (imgURL) {						
-						$('#outputimage').attr('src', imgURL);							
-					}
-			});
-			
-			var dread = $("#userDreads").find("img").context.currentSrc;
+						
+			$("#canvas").width = $("#croppingArea").width;
+			$("#canvas").height = $("#croppingArea").height;
+
+			var dread = $("#userDreads").find("img").attr('src');
 			var portrait = $("#userPortrait").attr('src');
-					
+
+// http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png
+			$("#canvas").drawImage({
+				  source: "http://beta.dreadlocks-artesanal.com/wp-content/uploads/2015/10/header_logo.png",
+				  x: 10, y: 10,
+				  width: "50",
+				  height: "50"
+				});
+
 			 $("#canvas").drawImage({
 				  source: portrait,
-				  x: 180, y: 150,
-				})
-				.drawImage({
-					source: dread,
-				  x: 150, y: 200,
+				  x: 50, y: 50,
 				});
-			
-			<!-- html2canvas($("#cropping-area"), { -->
-			<!-- onrendered: function(canvas) { -->
-				<!-- theCanvas = canvas; -->
-				<!-- document.body.appendChild(canvas); -->
-
-				<!-- // Convert and download as image  -->
-				<!-- Canvas2Image.saveAsPNG(canvas);  -->
-				<!-- $("#img-out").append(canvas); -->
-				<!-- // Clean up  -->
-				<!-- //document.body.removeChild(canvas); -->
-			<!-- } -->
-		<!-- }); -->
-			 
-   
+				// $("#canvas").drawImage({
+				// 	source: dread,
+				//   x: 150, y: 200,
+				// });   
 		});
 
 		//share image
@@ -242,16 +238,14 @@ $(function () {
 			//alert(slideEvt.value);					
 		});
 		
-/////////end events////////////		
-		
+/////////end events////////////	
 		
 		//initialize DreadSelectionList
 		function initializeDreadSelectionList(dreadSelectionArray){
 			dreadSelectionArray.forEach(function(item, index, array) {
-			  $("#dreadSelectionList").append('<a href="#" class="list-group-item list-group-item-action"><img class="dreadCanvasItem" src="Assets/img/dreads/'+item+'"/></a>');
+			  $("#dreadSelectionList").append('<a href="#" class="thumbnail"><img class="img-thumbnail" src="Assets/img/dreads/'+item+'"/></a>');
 			});			
 		};	
-
 
 	//end of doc ready
 	});
@@ -262,8 +256,9 @@ $(function () {
     <div class="container-fluid">
 		<div class="row">
 			<div class="col-md-1">	
-				<img src="Assets/img/corp/logo.png" width="90%"/>
-				<!-- <div class="dreadArtLogo"/> -->
+				<a href="http://dreadlocks-artesanal.ch/" target="_blank">
+					<img src="Assets/img/corp/logo.png" width="150"/>
+				</a>
 			</div>
 		</div>
 		<div class="row">
@@ -272,21 +267,31 @@ $(function () {
 					<div id="croppingArea" class="cropping-area"></div>
 					<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="10" />
 					<br/><br/>
+					<h3><span class="label label-outline-default">1</span> make your choice for your portrait</h3>
 					<input type="file" class="inputfile" id="myPortraitSelector"/>
-					<label for="myPortraitSelector" class="btn btn-danger">Choose a file</label>
+					<label for="myPortraitSelector" class="btn btn-danger"><i class="fa fa-upload" aria-hidden="true"></i>
+						select</label>
 					<br/><br/>
-					<button class="btn btn-success disabled" id="dwlBtn">save</button>
-					<a href="#shareModal" role="button" class="btn btn-primary disabled" data-toggle="modal" id="shareBtn">share</a>
+
+					<h3><span class="label label-outline-default">3</span> save or share with friends</h3>					
+					<button class="btn btn-success disabled" id="dwlBtn"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+						save
+					</button>
+					<a href="#shareModal" role="button" class="btn btn-primary disabled" data-toggle="modal" id="shareBtn"><i class="fa fa-share-alt" aria-hidden="true"></i>
+						share
+					</a>
 				</div>
 				
 				<!--just for DEV testcases-->
 				<canvas id="canvas" style="border:1px solid red" />
 			</div>
-			<div class="col-md-2">                
-				<div id="dreadSelectionList" class="list-inline"/>
+			<div class="col-md-2">
+				<h3 class="special-header"><span class="label label-outline-default">2</span> choos your dreads</h3>										
+				<div id="dreadSelectionList" class="row"/>
             </div>   			
 		</div>
 	</div>
   <!-- end of container -->
+
 </body>
 </html>
