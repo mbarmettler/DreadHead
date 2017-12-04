@@ -41,7 +41,7 @@
     justify-content: center;
  }
 
- #userDreads{
+#userDreads{
 	cursor:move;
 	width:40%;
 	z-index:2;
@@ -49,6 +49,10 @@
 #userPortrait{
 	position: relative;
 	height: 100%;
+}
+
+canvas{
+	object-fit: scale-down;
 }
 
  /*using for DEV purpose to show resizable, draggable, rotable element*/
@@ -64,19 +68,16 @@
 	cursor: pointer;
 	background-image: url(../img/rotate.png);
 	background-size: 100%;
-	left: 2px;
-	bottom: 2px;
+	left: 5px;
+	top: 5PX;
 }
 .ui-resizable-handle
 {
 	height: 32px;
 	width: 32px;
+	right: 5px;
+    top: 5px;
 	background-image: url(../img/resize.png);
-}
-.ui-widget-content .ui-icon.ui-icon-gripsmall-diagonal-se {
-	width: 32px;
-	height: 32px;
-	background: url(../img/resize.png) left top no-repeat;
 }
 
 .label-outline-default {

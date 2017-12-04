@@ -3,12 +3,29 @@
     // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
     // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": 
+    [       
         {
-            "type": "node",
+            "type": "PowerShell",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${file}"
+            "name": "PS Deploy",
+            "script": "${workspaceRoot}\\.vscode\\deploy.ps1",
+            "args": [],
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "name": "Launch localhost",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8050/dreadhead/index.html",
+            "webRoot": "${workspaceRoot}/wwwroot"
+        },
+        {
+            "name": "Launch index.html (disable sourcemaps)",
+            "type": "chrome",
+            "request": "launch",
+            "sourceMaps": false,
+            "file": "${workspaceRoot}/index.html"
         }
     ]
 }
