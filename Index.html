@@ -11,7 +11,7 @@
 
 	<!-- bootstrap, jquery, jquery ui -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://code.jquery.com/jquery-1.11.2.js"></script>	
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>	
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -27,8 +27,14 @@
 	<!--jwatermark-->
 	<!-- <script src="libs/baivong-watermark-2dd6d88/dist/jquery.watermark.min.js"></script> -->
 	
-	<!-- html2canvasK -->
-	<script src="libs/jcanvas.min.js"></script>
+	<!-- jcanvas -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/20.1.4/min/jcanvas.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/20.1.4/min/jcanvas-crescents.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/20.1.4/min/jcanvas-donuts.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/20.1.4/min/jcanvas-handles.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/20.1.4/min/jcanvas-hearts.min.js"></script>
+
 
 	<!--bs slider-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
@@ -49,9 +55,7 @@
 
 <script>
 $(function () {			
-		//$("#canvas").width($("#croppingArea").width());
-		$("#canvas").height("100%");
-
+		
 		//init DreadSelectionList
 		initializeDreadSelectionList(dreadSelectionArray);		
 	
@@ -95,6 +99,9 @@ $(function () {
 
 			//place rotatable icon on top left
 			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
+
+			//enable functional buttons
+			$('.btn').removeClass("disabled");		
 		});					
 		
 		//render with watermark & download image locally
@@ -103,48 +110,59 @@ $(function () {
 									
 			var dread = $("#userDreads").attr("src");
 			var portrait = $("#userPortrait").attr('src');
+			
+			var dreadwidth = $("#userDreads").width();
+			var dreadHeight = $("#userDreads").height();
 
-			var dreadwidth = $("#userDreads").width()*2;
-			var dreadHeight = $("#userDreads").height()*2;
+			var potraitWidth =  $("#userPortrait").width();
+			var potraitHeight =  $("#userPortrait").height();
 
-			var potraitWidth =  $("#userPortrait").width()*2;
-			var potraitHeight =  $("#userPortrait").height()*2;
+			var ratioDread = 0;
+			var ratioPortrait = 0;
+			if($("#userDreads").width() > $("#userDreads").height())
+			{
+				ratioDread =  $("#userDreads").width() / $("#userDreads").height();
+			}
+			if($("#userDreads").height() > $("#userDreads").width())
+			{
+				ratioDread = $("#userDreads").height() / $("#userDreads").width();
+			}
+
 
 			$("#canvas").drawImage({
 				  source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
-				  x: 20, y: 20,
-				  width: "50",
-				  height: "50",
-				  scale: 1
-				});
-
-			$("#canvas").drawText({
-				font: '12pt sans-serif',
-				fillStyle: '#9cf',
-				strokeStyle: '#25a',
-				align: "center",
-				strokeWidth: 1,
-				fromCenter: true,
-				text: "dreadlocks-artesenal.ch"
-			});
-
-			 $("#canvas").drawImage({
-				  source: portrait,	
-				  x: 0, y: 0,
-				  width: potraitWidth,
-				  height: potraitHeight,
-				  align: "end",
-				  fromCenter: true
-				});
-				$("#canvas").drawImage({
+				  x: 50, y: 50,
+				  width: "90",
+				  height: "90"
+				 })
+				.drawText({
+					font: '13pt sans-serif',
+					fillStyle: '#333333',
+					strokeStyle: '#75a62b',
+					x: 100,	
+					y: dreadHeight+150,
+					align: 'left',
+					strokeWidth: 1,
+					text: "dreadlocks-artesenal.ch"
+				})
+				.drawImage({
+					source: portrait,	
+					x: potraitWidth,
+					y: potraitHeight,
+					width: potraitWidth,
+					height: potraitHeight
+				})
+				.drawImage({
 					source: dread,
+					x: potraitWidth-10,
+					y: potraitHeight,					
 					width: dreadwidth,
 					height: dreadHeight
 				});   
 
-				$('#canvas').getCanvasImage('png');
-				$('#canvas').getCanvasImage('jpeg', 1);
-				//top.location.href = $('#canvas').getCanvasImage('png');;
+			$('#canvas').getCanvasImage('png');
+			$('#canvas').getCanvasImage('jpeg', 1);
+			//top.location.href = $('#canvas').getCanvasImage('png');;
 		});
 
 		//share image
@@ -155,7 +173,15 @@ $(function () {
 		
 		//update slider
 		$("#imgZoomslider").on("slide", function(slideEvt) {
-			//alert(slideEvt.value);					
+			//alert(slideEvt.value);	
+			var userportrait =  $("#userPortrait");		
+			var ratio = slideEvt.value;
+			var oneProc = orginalPortraitWidth/100;
+			var newWidth = oneProc*ratio;
+			if(newWidth > 100)
+			{
+				userportrait.width(newWidth);				
+			}
 		});
 	
 	//end of doc ready
@@ -176,7 +202,7 @@ $(function () {
             <div class="col-md-8">
                 <div class="jumbotron">
 					<div id="croppingArea" class="cropping-area"></div>
-					<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="10" />
+					<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="10" />
 					<br/><br/>
 					<h3><span class="label label-outline-default">1</span> make your choice for your portrait</h3>
 					<input type="file" class="inputfile" id="myPortraitSelector"/>
@@ -194,7 +220,7 @@ $(function () {
 				</div>
 				
 				<!--just for DEV testcases-->
-				<canvas id="canvas" style="border:1px dotted red" />
+				<canvas id="canvas" width="700px" height="900px" style="border:1px dotted red" />
 			</div>
 			<div class="col-md-2">
 				<h3 class="special-header"><span class="label label-outline-default">2</span> choos your dreads</h3>										

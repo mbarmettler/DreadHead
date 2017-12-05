@@ -6,6 +6,8 @@
 //specify Dread Hair images on web folder /img/dreads/
 var dreadSelectionArray = ["1.png","2.png","3.png","4.png", "5.png", "6.gif", "7.png", "8.png"];
 
+var orginalPortraitWidth = 0;
+
 //File selection dialog with Filereader and exception handling
 var useBlob = false && window.URL;
 function readImage (file) {
@@ -25,9 +27,11 @@ function readImage (file) {
 		// we need to create a new image and assign it's src, so when
 		// the image is loaded we can calculate it's width and height:
 		var image  = new Image();
-		
+		image.crossOrigin = "anonymous";
 		image.addEventListener("load", function () {
-			  
+            //remove old portrait
+            $("#userPortrait").remove();
+
 			// Finally append our created image and the HTML info string to our `#preview` 
 			$("#croppingArea").append(this);		
  
@@ -36,12 +40,16 @@ function readImage (file) {
 
 			var portraitwidth = userportrait.width();
 			var portraitheight = userportrait.height();
-													
+            orginalPortraitWidth = portraitwidth;
+
+            if (portraitwidth > $("#croppingArea").width())
+            {
+                userportrait.width($("#croppingArea").width());
+                $("#imgZoomslider").bootstrapSlider("setValue",100);
+            }
+
 			//adding resizing and dragging
 			//$("#userPortrait").draggable({ width: portraitwidth, height: portraitheight, appendTo:"#cropping-area", scroll: false })
-										
-			//enable functional buttons
-			$('.btn').removeClass("disabled");							
 
 			// If we set the variable `useBlob` to true:
 			// (Data-URLs can end up being really large

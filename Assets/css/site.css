@@ -53,6 +53,8 @@
 
 canvas{
 	object-fit: scale-down;
+	/*width: 100%;*/
+    height: 100%;
 }
 
  /*using for DEV purpose to show resizable, draggable, rotable element*/
