@@ -31,13 +31,17 @@ function readImage (file) {
 		image.addEventListener("load", function () {
             //remove old portrait
             $("#userPortrait").remove();
-
+                
 			// Finally append our created image and the HTML info string to our `#preview` 
 			$("#croppingArea").append(this);		
- 
-			var userportrait = $("#croppingArea").find('img');
-			userportrait.prop("id", "userPortrait");	
 
+            //append portrait slider
+            $(".slider").css("display", "block");
+
+            //find userportrait and set ID
+			var userportrait = $("#croppingArea").find("img[crossorigin='anonymous']");
+			userportrait.prop("id", "userPortrait");	
+                        
 			var portraitwidth = userportrait.width();
             var portraitheight = userportrait.height();
             var croppingWidth = $("#croppingArea").width();
@@ -133,7 +137,11 @@ function generateImage()
 {    
     var dread = $("#userDreads").attr("src");
     var portrait = $("#userPortrait").attr('src');
-    
+
+    var dreadParent = $("#userDreads").parent();
+    var dreadParentTransform = dreadParent.css("transform");
+    $("#userDreads").css("transform:", dreadParentTransform);
+
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
 
@@ -151,7 +159,9 @@ function generateImage()
         ratioDread = potraitHeight / potraitWidth;
     }
 
-
+    //clear canvas before rendering
+    $("#canvas").clearCanvas();
+    
     $("#canvas").drawImage({
             source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
             x: 50, y: 50,

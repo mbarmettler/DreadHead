@@ -42,13 +42,18 @@
  }
 
 #userDreads{
-	cursor:move;
-	width:40%;
-	z-index:2;
+	cursor: move;
+	width: 40%;
+	min-width: 50px;
+	z-index: 2;
 }
 #userPortrait{
 	position: relative;
 	height: 100%;
+	z-index: 0;
+}
+.slider{
+	display: none;
 }
 
 canvas{

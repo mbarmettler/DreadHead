@@ -121,7 +121,7 @@ $(function () {
 			var ratio = slideEvt.value;
 			var oneProc = orginalPortraitWidth/100;
 			var newWidth = oneProc*ratio;
-			if(newWidth > 100)
+			if(newWidth < $("#croppingArea").width())
 			{
 				userportrait.width(newWidth);				
 			}
@@ -146,9 +146,8 @@ $(function () {
                 <div class="jumbotron">
 					<div id="croppingArea" class="cropping-area"></div>
 					<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="10" />
-					<br/><br/>
 					<h3><span class="label label-outline-default">1</span> 
-						make your choice for your portrait
+						choose your portrait
 					</h3>
 					<input type="file" class="inputfile" id="myPortraitSelector"/>
 					<label for="myPortraitSelector" class="btn btn-danger"><i class="fa fa-upload" aria-hidden="true"></i>
@@ -168,7 +167,7 @@ $(function () {
 				<!--just for DEV testcases-->
 				<canvas id="canvas" width="700px" height="900px" style="border:1px dotted red" />
 			</div>
-			<div class="col-md-2">
+			<div class="col-md-3">
 				<h3 class="special-header"><span class="label label-outline-default">2</span> choos your dreads</h3>										
 				<div id="dreadSelectionList" class="row"/>
             </div>   			
