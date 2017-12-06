@@ -89,10 +89,7 @@ $(function () {
 						
 			//adding img editing options				
 			dreadImgsrc.resizable({ handles: "ne" });
-//todo change resize image
-					// handle: "ne"
-					// handles: { 'e': '.ui-resizable-e', 's': '.ui-resizable-s', 'se': '.ui-resizable-se'}
-					  		   
+
   			dreadImgsrc.parent().rotatable(options);
 			dreadImgsrc.parent().css("z-index", 1);
 			dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:false});		
@@ -107,62 +104,8 @@ $(function () {
 		//render with watermark & download image locally
 		$("#dwlBtn").on("click", function(e) {
 			e.preventDefault();  //stop the browser from following
-									
-			var dread = $("#userDreads").attr("src");
-			var portrait = $("#userPortrait").attr('src');
 			
-			var dreadwidth = $("#userDreads").width();
-			var dreadHeight = $("#userDreads").height();
-
-			var potraitWidth =  $("#userPortrait").width();
-			var potraitHeight =  $("#userPortrait").height();
-
-			var ratioDread = 0;
-			var ratioPortrait = 0;
-			if($("#userDreads").width() > $("#userDreads").height())
-			{
-				ratioDread =  $("#userDreads").width() / $("#userDreads").height();
-			}
-			if($("#userDreads").height() > $("#userDreads").width())
-			{
-				ratioDread = $("#userDreads").height() / $("#userDreads").width();
-			}
-
-
-			$("#canvas").drawImage({
-				  source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
-				  x: 50, y: 50,
-				  width: "90",
-				  height: "90"
-				 })
-				.drawText({
-					font: '13pt sans-serif',
-					fillStyle: '#333333',
-					strokeStyle: '#75a62b',
-					x: 100,	
-					y: dreadHeight+150,
-					align: 'left',
-					strokeWidth: 1,
-					text: "dreadlocks-artesenal.ch"
-				})
-				.drawImage({
-					source: portrait,	
-					x: potraitWidth,
-					y: potraitHeight,
-					width: potraitWidth,
-					height: potraitHeight
-				})
-				.drawImage({
-					source: dread,
-					x: potraitWidth-10,
-					y: potraitHeight,					
-					width: dreadwidth,
-					height: dreadHeight
-				});   
-
-			$('#canvas').getCanvasImage('png');
-			$('#canvas').getCanvasImage('jpeg', 1);
-			//top.location.href = $('#canvas').getCanvasImage('png');;
+			generateImage();
 		});
 
 		//share image
@@ -204,10 +147,13 @@ $(function () {
 					<div id="croppingArea" class="cropping-area"></div>
 					<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="10" />
 					<br/><br/>
-					<h3><span class="label label-outline-default">1</span> make your choice for your portrait</h3>
+					<h3><span class="label label-outline-default">1</span> 
+						make your choice for your portrait
+					</h3>
 					<input type="file" class="inputfile" id="myPortraitSelector"/>
 					<label for="myPortraitSelector" class="btn btn-danger"><i class="fa fa-upload" aria-hidden="true"></i>
-						select</label>
+						select
+					</label>
 					<br/><br/>
 
 					<h3><span class="label label-outline-default">3</span> save or share with friends</h3>					
