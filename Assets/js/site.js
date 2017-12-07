@@ -141,6 +141,9 @@ function generateImage()
     var dreadParent = $("#userDreads").parent();
     var dreadParentTransform = dreadParent.css("transform");
     $("#userDreads").css("transform:", dreadParentTransform);
+//todo x and y of dreads
+    // $("#userDreads").css("top:", dreadParent.css("top"));
+
 
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
@@ -148,16 +151,27 @@ function generateImage()
     var potraitWidth =  $("#userPortrait").width();
     var potraitHeight =  $("#userPortrait").height();
 
-    var ratioDread = 0;
+    // var ratioDread = 0;
+    // if($("#userDreads").width() > $("#userDreads").height())
+    // {
+    //     ratioDread =  dreadwidth / dreadHeight;
+    // }
+    // if($("#userDreads").height() > $("#userDreads").width())
+    // {
+    //     ratioDread = potraitHeight / potraitWidth;
+    // }
+
     var ratioPortrait = 0;
-    if($("#userDreads").width() > $("#userDreads").height())
+    if($("#userPortrait").width() > $("#userPortrait").height())
     {
-        ratioDread =  dreadwidth / dreadHeight;
+        ratioPortrait =  dreadwidth / dreadHeight;
     }
-    if($("#userDreads").height() > $("#userDreads").width())
+    if($("#userPortrait").height() > $("#userPortrait").width())
     {
-        ratioDread = potraitHeight / potraitWidth;
+        ratioPortrait = potraitHeight / potraitWidth;
+
     }
+
 
     //clear canvas before rendering
     $("#canvas").clearCanvas();
@@ -180,14 +194,14 @@ function generateImage()
         })
         .drawImage({
             source: portrait,	
-            x: potraitWidth,
-            y: potraitHeight,
+            x: potraitWidth-120,
+            y: potraitHeight*ratioPortrait,
             width: potraitWidth,
             height: potraitHeight
         })
         .drawImage({
             source: dread,
-            x: potraitWidth-10,
+            x: potraitWidth*ratioPortrait,
             y: potraitHeight,					
             width: dreadwidth,
             height: dreadHeight
