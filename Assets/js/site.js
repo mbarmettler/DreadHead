@@ -7,6 +7,7 @@
 var dreadSelectionArray = ["1.png","2.png","3.png","4.png", "5.png", "6.gif", "7.png", "8.png"];
 
 var orginalPortraitWidth = 0;
+var scaleddownMaxPortraitwidth = 0;
 
 //File selection dialog with Filereader and exception handling
 var useBlob = false && window.URL;
@@ -48,10 +49,11 @@ function readImage (file) {
 
             orginalPortraitWidth = portraitwidth;
 
-            if (portraitwidth > croppingWidth)
+            if (portraitwidth >= croppingWidth)
             {
-                userportrait.width(croppingWidth);
-                orginalPortraitWidth = croppingWidth;
+                var reduceratio = 40;
+                scaleddownMaxPortraitwidth = croppingWidth/100*reduceratio;
+                userportrait.width(scaleddownMaxPortraitwidth);
 
                 $("#imgZoomslider").bootstrapSlider("setValue",100);
             }
@@ -178,7 +180,8 @@ function generateImage()
     
     $("#canvas").drawImage({
             source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
-            x: 50, y: 50,
+            x: 50,
+            y: 50,
             width: "90",
             height: "90"
             })
@@ -194,8 +197,8 @@ function generateImage()
         })
         .drawImage({
             source: portrait,	
-            x: potraitWidth-120,
-            y: potraitHeight*ratioPortrait,
+            x: potraitWidth-180,
+            y: potraitWidth*ratioPortrait,
             width: potraitWidth,
             height: potraitHeight
         })

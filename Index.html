@@ -115,20 +115,28 @@ $(function () {
 		});
 		
 		//update slider
-		$("#imgZoomslider").on("slide", function(slideEvt) {
+		$("#imgZoomslider").on("slideStop", function(slideEvt) {
 			//alert(slideEvt.value);	
 			var userportrait =  $("#userPortrait");		
 			var ratio = slideEvt.value;
-			var oneProc = orginalPortraitWidth/100;
+			var oneProc = scaleddownMaxPortraitwidth/100;
 			var newWidth = oneProc*ratio;
-			if(newWidth < $("#croppingArea").width())
+			if(newWidth < scaleddownMaxPortraitwidth)
 			{
-				userportrait.width(newWidth);				
+				if(newWidth > 200)
+				{
+					userportrait.width(newWidth);
+				}
+			}
+			else
+			{
+				userportrait.width(scaleddownMaxPortraitwidth);
 			}
 		});
-	
+			
 	//end of doc ready
 	});
+	
 </script>
 </head>
 
