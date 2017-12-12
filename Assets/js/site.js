@@ -11,6 +11,61 @@ var orginalPortraitWidth = 0;
 var scaleddownMaxPortraitwidth = 0;
 var portraitexiforientation = -1;
 
+//
+//Main function
+//
+$(function () {		
+    
+        //User portrait image changed / selected
+        $("input:file").change(function () {
+        
+             // Let's store the FileList Array into a variable:
+            // https://developer.mozilla.org/en-US/docs/Web/API/FileList
+            var files  = this.files;
+            // Let's create an empty `errors` String to collect eventual errors into:
+            var errors = "";
+    
+            if (!files) {
+                errors += "File upload not supported by your browser.";
+            }
+    
+            // Check for `files` (FileList) support and if contains at least one file:
+            if (files && files[0]) {
+    
+                // Iterate over every File object in the FileList array
+                for(var i=0; i<files.length; i++) {
+    
+                    // Let's refer to the current File as a `file` variable
+                    // https://developer.mozilla.org/en-US/docs/Web/API/File
+                    var file = files[i];
+    
+                    // Test the `file.name` for a valid image extension:
+                    // (pipe `|` delimit more image extensions)
+                    // The regex can also be expressed like: /\.(png|jpe?g|gif)$/i
+                    if ( (/\.(png|jpeg|jpg|gif)$/i).test(file.name) ) {
+                        // SUCCESS! It's an image!
+                        // Send our image `file` to our `readImage` function!
+                        readImage( file ); 
+                    }
+                    else {
+                    errors += file.name +" Unsupported Image extension\n";  
+                    }
+                }
+            }
+    
+            // Notify the user for any errors (i.e: try uploading a .txt file)
+            if (errors) {
+                alert(errors); 
+            }
+        });
+    
+        //initialize DreadSelectionList
+        initializeDreadSelectionList(dreadSelectionArray);
+        
+        // end document ready
+    });
+//
+
 //File selection dialog with Filereader and exception handling
 var useBlob = false && window.URL;
 function readImage (file) {
@@ -113,57 +168,6 @@ function readImage (file) {
   // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
    reader.readAsDataURL(file);  
 }
-
-$(function () {		
-
-    //User portrait image changed / selected
-    $("input:file").change(function () {
-    
-         // Let's store the FileList Array into a variable:
-        // https://developer.mozilla.org/en-US/docs/Web/API/FileList
-        var files  = this.files;
-        // Let's create an empty `errors` String to collect eventual errors into:
-        var errors = "";
-
-        if (!files) {
-            errors += "File upload not supported by your browser.";
-        }
-
-        // Check for `files` (FileList) support and if contains at least one file:
-        if (files && files[0]) {
-
-            // Iterate over every File object in the FileList array
-            for(var i=0; i<files.length; i++) {
-
-                // Let's refer to the current File as a `file` variable
-                // https://developer.mozilla.org/en-US/docs/Web/API/File
-                var file = files[i];
-
-                // Test the `file.name` for a valid image extension:
-                // (pipe `|` delimit more image extensions)
-                // The regex can also be expressed like: /\.(png|jpe?g|gif)$/i
-                if ( (/\.(png|jpeg|jpg|gif)$/i).test(file.name) ) {
-                    // SUCCESS! It's an image!
-                    // Send our image `file` to our `readImage` function!
-                    readImage( file ); 
-                }
-                else {
-                errors += file.name +" Unsupported Image extension\n";  
-                }
-            }
-        }
-
-        // Notify the user for any errors (i.e: try uploading a .txt file)
-        if (errors) {
-            alert(errors); 
-        }
-    });
-
-    //initialize DreadSelectionList
-    initializeDreadSelectionList(dreadSelectionArray);
-    
-    // end document ready
-});
 
 function initializeDreadSelectionList(dreadSelectionArray) {
     dreadSelectionArray.forEach(function (item, index, array) {
