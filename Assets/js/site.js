@@ -4,10 +4,12 @@
 ////////////////////////////////////////////////////
 
 //specify Dread Hair images on web folder /img/dreads/
-var dreadSelectionArray = ["1.png","2.png","3.png","4.png", "5.png", "6.gif", "7.png", "8.png"];
+var dreadSelectionArray = ["Dreads (1).png", "Dreads (2).png", "Dreads (3).png", "Dreads (4).png", "Dreads (5).png", "Dreads (6).png", "Dreads (7).png", "Dreads (8).png", "Dreads (9).png", "Dreads (10).png", "Dreads (11).png", "Dreads (12).png", "Dreads (13).png", "Dreads (14).png", "Dreads (15).png", "Dreads (16).png", "Dreads (17).png", "1.png","2.png","3.png","4.png", "5.png", "6.gif", "7.png", "8.png"];
 
+//global variables for image editing/sizing/transform
 var orginalPortraitWidth = 0;
 var scaleddownMaxPortraitwidth = 0;
+var portraitexiforientation = -1;
 
 //File selection dialog with Filereader and exception handling
 var useBlob = false && window.URL;
@@ -16,6 +18,10 @@ function readImage (file) {
 	// Create a new FileReader instance
 	// https://developer.mozilla.org/en/docs/Web/API/FileReader
 	var reader = new FileReader();
+
+    //check image exif metadate (mobile photos)
+    //affects initial rotation
+    preRotateImage(file);
 
 	// Once a file is successfully readed:
 	reader.addEventListener("load", function () {
@@ -31,8 +37,37 @@ function readImage (file) {
 		image.crossOrigin = "anonymous";
 		image.addEventListener("load", function () {
             //remove old portrait
-            $("#userPortrait").remove();
-                
+            $("#userPortrait").remove();       
+
+            var degree = 0;
+            switch (portraitexiforientation) {
+                case 1:
+                    degree = 0;
+                    break;
+                case 2:
+                    degree = 0;
+                    break;
+                case 3:
+                    degree = 180;
+                    break;
+                case 4:
+                    degree = 180;
+                    break;
+                case 5:
+                    degree = 90;
+                    break;
+                case 6:
+                    degree = 90;
+                    break;
+                case 7:
+                    degree = 270;
+                    break;
+                case 8:
+                    degree = 270;
+                    break;
+            }
+            $(this).css('transform', 'rotate('+ degree +'deg)')        
+
 			// Finally append our created image and the HTML info string to our `#preview` 
 			$("#croppingArea").append(this);		
 
@@ -41,8 +76,8 @@ function readImage (file) {
 
             //find userportrait and set ID
 			var userportrait = $("#croppingArea").find("img[crossorigin='anonymous']");
-			userportrait.prop("id", "userPortrait");	
-                        
+			userportrait.prop("id", "userPortrait");	                        
+
 			var portraitwidth = userportrait.width();
             var portraitheight = userportrait.height();
             var croppingWidth = $("#croppingArea").width();
@@ -72,10 +107,11 @@ function readImage (file) {
 			}
 		});
 			
-		image.src = useBlob ? window.URL.createObjectURL(file) : reader.result;
+        image.src = useBlob ? window.URL.createObjectURL(file) : reader.result;
   });
+  
   // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
-  reader.readAsDataURL(file);  
+   reader.readAsDataURL(file);  
 }
 
 $(function () {		
@@ -140,12 +176,7 @@ function generateImage()
     var dread = $("#userDreads").attr("src");
     var portrait = $("#userPortrait").attr('src');
 
-    var dreadParent = $("#userDreads").parent();
-    var dreadParentTransform = dreadParent.css("transform");
-    $("#userDreads").css("transform:", dreadParentTransform);
-//todo x and y of dreads
-    // $("#userDreads").css("top:", dreadParent.css("top"));
-
+    var userDreadAngle = getCurrentRotationFixed("userDreads", true);
 
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
@@ -171,9 +202,7 @@ function generateImage()
     if($("#userPortrait").height() > $("#userPortrait").width())
     {
         ratioPortrait = potraitHeight / potraitWidth;
-
     }
-
 
     //clear canvas before rendering
     $("#canvas").clearCanvas();
@@ -198,7 +227,7 @@ function generateImage()
         .drawImage({
             source: portrait,	
             x: potraitWidth-180,
-            y: potraitWidth*ratioPortrait,
+            y: potraitHeight,
             width: potraitWidth,
             height: potraitHeight
         })
@@ -207,10 +236,114 @@ function generateImage()
             x: potraitWidth*ratioPortrait,
             y: potraitHeight,					
             width: dreadwidth,
-            height: dreadHeight
+            height: dreadHeight,
+            rotate: userDreadAngle
         });   
 
     $('#canvas').getCanvasImage('png');
     $('#canvas').getCanvasImage('jpeg', 1);
     //top.location.href = $('#canvas').getCanvasImage('png');
 }
+
+//Exif Metadata handling
+function preRotateImage(file)
+{    
+  var binfR = new FileReader();
+
+  binfR.addEventListener("load", function () {
+    
+    var view = new DataView(binfR.result);
+    
+    if (view.getUint16(0, false) != 0xFFD8)
+    {
+        portraitexiforientation = -2;
+    } 
+    var length = view.byteLength, offset = 2;
+    while (offset < length) {
+        var marker = view.getUint16(offset, false);
+        offset += 2;
+        if (marker == 0xFFE1) {
+        if (view.getUint32(offset += 2, false) != 0x45786966) 
+        {
+            portraitexiforientation = -1;
+        }
+        var little = view.getUint16(offset += 6, false) == 0x4949;
+        offset += view.getUint32(offset + 4, little);
+        var tags = view.getUint16(offset, little);
+        offset += 2;
+        for (var i = 0; i < tags; i++)
+            if (view.getUint16(offset + (i * 12), little) == 0x0112)
+            {
+                portraitexiforientation = view.getUint16(offset + (i * 12) + 8, little);
+            }
+        }
+        else if ((marker & 0xFF00) != 0xFF00) break;
+        else offset += view.getUint16(offset, false);
+    }
+  });
+  
+  binfR.readAsArrayBuffer(file);  
+}
+
+//calculates Degree value of Rotation Transformation Matrix
+function getCurrentRotationFixed( elid, searchOnParent) 
+{
+    var el;
+    var st;
+    var tr;
+    if(searchOnParent)    {
+        el = document.getElementById(elid).parentNode;
+        st = window.getComputedStyle(el, null);        
+        tr = st.getPropertyValue("-webkit-transform") ||
+        st.getPropertyValue("-moz-transform") ||
+        st.getPropertyValue("-ms-transform") ||
+        st.getPropertyValue("-o-transform") ||
+        st.getPropertyValue("transform") ||
+        "fail...";
+    }
+    else  {
+        el = document.getElementById(elid);
+        st = window.getComputedStyle(el, null);
+        tr = st.getPropertyValue("-webkit-transform") ||
+         st.getPropertyValue("-moz-transform") ||
+         st.getPropertyValue("-ms-transform") ||
+         st.getPropertyValue("-o-transform") ||
+         st.getPropertyValue("transform") ||
+         "fail...";
+    }
+
+    if( tr !== "none") {
+      console.log('Matrix: ' + tr);
+  
+      var values = tr.split('(')[1];
+        values = values.split(')')[0];
+        values = values.split(',');
+      var a = values[0];
+      var b = values[1];
+      var c = values[2];
+      var d = values[3];
+  
+      var scale = Math.sqrt(a*a + b*b);
+  
+      // First option, don't check for negative result
+      // Second, check for the negative result
+      /** /
+      var radians = Math.atan2(b, a);
+      var angle = Math.round( radians * (180/Math.PI));
+      /*/
+      var radians = Math.atan2(b, a);
+      if ( radians < 0 ) {
+        radians += (2 * Math.PI);
+      }
+      var angle = Math.round( radians * (180/Math.PI));
+      /**/
+      
+    } 
+    else   {
+      var angle = 0;
+    }
+  
+    // works!
+    console.log('Rotate: ' + angle + 'deg');
+    return angle;   
+  }
