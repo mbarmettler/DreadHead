@@ -45,13 +45,6 @@
 
 	<!-- site scripts -->
 	<script src="Assets/js/site.js"></script>
-	
-
-	<style>
-		.special-header {
-			margin-top: -42px;;
-		}
-	</style>
 
 <script>
 $(function () {			
@@ -123,7 +116,7 @@ $(function () {
 			var newWidth = oneProc*ratio;
 			if(newWidth < scaleddownMaxPortraitwidth)
 			{
-				if(newWidth > 200)
+				if(newWidth >= 200)
 				{
 					userportrait.width(newWidth);
 				}
@@ -173,7 +166,9 @@ $(function () {
 				</div>
 				
 				<!--just for DEV testcases-->
-				<canvas id="canvas" width="700px" height="900px" style="border:1px dotted red" />
+				<a id="dwlDreadLink" href="#" target="_blank">
+					<canvas id="canvas" width="700px" height="900px" style="border:1px dotted red" />
+				</a>
 			</div>
 			<div class="col-md-3">
 				<h3 class="special-header"><span class="label label-outline-default">2</span> choos your dreads</h3>										

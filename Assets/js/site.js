@@ -78,10 +78,10 @@ function readImage (file) {
     //affects initial rotation
     preRotateImage(file);
 
-	// Once a file is successfully readed:
+// Once a file is successfully readed:
 	reader.addEventListener("load", function () {
 
-		// At this point `reader.result` contains already the Base64 Data-URL
+	    // At this point `reader.result` contains already the Base64 Data-URL
 		// and we've could immediately show an image using
 		// `elPreview.insertAdjacentHTML("beforeend", "<img src='"+ reader.result +"'>");`
 		// But we want to get that image's width and height px values!
@@ -94,6 +94,7 @@ function readImage (file) {
             //remove old portrait
             $("#userPortrait").remove();       
 
+            //exif metadata rotation applying
             var degree = 0;
             switch (portraitexiforientation) {
                 case 1:
@@ -122,19 +123,16 @@ function readImage (file) {
                     break;
             }
             $(this).css('transform', 'rotate('+ degree +'deg)')        
-
+			$(this).prop("id", "userPortrait");	                        
+            
 			// Finally append our created image and the HTML info string to our `#preview` 
 			$("#croppingArea").append(this);		
 
             //append portrait slider
-            $(".slider").css("display", "block");
+            $(".slider").css("display", "block");                   
 
-            //find userportrait and set ID
-			var userportrait = $("#croppingArea").find("img[crossorigin='anonymous']");
-			userportrait.prop("id", "userPortrait");	                        
-
-			var portraitwidth = userportrait.width();
-            var portraitheight = userportrait.height();
+			var portraitwidth = $("#userPortrait").width();
+            var portraitheight = $("#userPortrait").height();
             var croppingWidth = $("#croppingArea").width();
 
             orginalPortraitWidth = portraitwidth;
@@ -223,7 +221,7 @@ function generateImage()
             fillStyle: '#333333',
             strokeStyle: '#75a62b',
             x: 100,	
-            y: dreadHeight+150,
+            y: dreadHeight+100,
             align: 'left',
             strokeWidth: 1,
             text: "dreadlocks-artesenal.ch"
@@ -242,11 +240,11 @@ function generateImage()
             width: dreadwidth,
             height: dreadHeight,
             rotate: userDreadAngle
-        });   
+        }).restoreCanvas();   
 
-    $('#canvas').getCanvasImage('png');
-    $('#canvas').getCanvasImage('jpeg', 1);
-    //top.location.href = $('#canvas').getCanvasImage('png');
+    var dddddd  = $("#canvas").getCanvasImage('png');
+    console.log(dddddd);
+    $("#dwlDreadLink").attr("href", dddddd);
 }
 
 //Exif Metadata handling
