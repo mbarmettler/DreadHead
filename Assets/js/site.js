@@ -45,10 +45,12 @@ $(function () {
                     if ( (/\.(png|jpeg|jpg|gif)$/i).test(file.name) ) {
                         // SUCCESS! It's an image!
                         // Send our image `file` to our `readImage` function!
+                        // reset exifInformation
+                        portraitexiforientation = -1;
                         readImage( file ); 
                     }
                     else {
-                    errors += file.name +" Unsupported Image extension\n";  
+                        errors += file.name +" Unsupported Image extension\n";  
                     }
                 }
             }
@@ -141,7 +143,7 @@ function readImage (file) {
             {
                 var reduceratio = 40;
                 scaleddownMaxPortraitwidth = croppingWidth/100*reduceratio;
-                userportrait.width(scaleddownMaxPortraitwidth);
+                $("#userPortrait").width(scaleddownMaxPortraitwidth);
 
                 $("#imgZoomslider").bootstrapSlider("setValue",100);
             }
@@ -179,6 +181,7 @@ function generateImage()
     var portrait = $("#userPortrait").attr('src');
 
     var userDreadAngle = getCurrentRotationFixed("userDreads", true);
+    var portraitAngle = getCurrentRotationFixed("userPortrait", false);
 
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
@@ -231,7 +234,8 @@ function generateImage()
             x: potraitWidth-180,
             y: potraitHeight,
             width: potraitWidth,
-            height: potraitHeight
+            height: potraitHeight,
+            rotate: portraitAngle
         })
         .drawImage({
             source: dread,
