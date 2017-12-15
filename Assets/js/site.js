@@ -4,7 +4,7 @@
 ////////////////////////////////////////////////////
 
 //specify Dread Hair images on web folder /img/dreads/
-var dreadSelectionArray = ["Dreads (1).png", "Dreads (2).png", "Dreads (3).png", "Dreads (4).png", "Dreads (5).png", "Dreads (6).png", "Dreads (7).png", "Dreads (8).png", "Dreads (9).png", "Dreads (10).png", "Dreads (11).png", "Dreads (12).png", "Dreads (13).png", "Dreads (14).png", "Dreads (15).png", "Dreads (16).png", "Dreads (17).png", "1.png","2.png","3.png","4.png", "5.png", "6.gif", "7.png", "8.png"];
+var dreadSelectionArray = ["Dreads (1).png", "Dreads (2).png", "Dreads (3).png", "Dreads (4).png", "Dreads (5).png", "Dreads (6).png", "Dreads (7).png", "Dreads (8).png", "Dreads (9).png", "Dreads (10).png", "Dreads (11).png", "Dreads (12).png", "Dreads (13).png", "Dreads (14).png", "Dreads (15).png", "Dreads (16).png", "Dreads (17).png"];
 
 //global variables for image editing/sizing/transform
 var orginalPortraitWidth = 0;
@@ -171,7 +171,7 @@ function readImage (file) {
 
 function initializeDreadSelectionList(dreadSelectionArray) {
     dreadSelectionArray.forEach(function (item, index, array) {
-        $("#dreadSelectionList").append('<a href="#" class="thumbnail"><img class="img-thumbnail" src="Assets/img/dreads/' + item + '"/></a>');
+        $("#dreadSelectionList").append('<div class="col-lg-4 col-sm-4 co-xs-12"><a href="#" class="thumbnail"><img class="img-thumbnail img-responsive" src="Assets/img/dreads/thumbs/' + item + '"/></a></div>');
     });
 }
 
