@@ -125,29 +125,30 @@ function readImage (file) {
                     break;
             }
             $(this).css('transform', 'rotate('+ degree +'deg)')        
-			$(this).prop("id", "userPortrait");	                        
-            
+            $(this).prop("id", "userPortrait");	        
+                            
+       ///todo append image at end of this     
 			// Finally append our created image and the HTML info string to our `#preview` 
 			$("#croppingArea").append(this);		
 
             //append portrait slider
             $(".slider").css("display", "block");                   
 
-			var portraitwidth = $("#userPortrait").width();
-            var portraitheight = $("#userPortrait").height();
+			var portraitwidth = $(this).width();
+            var portraitheight = $(this).height();
             var croppingWidth = $("#croppingArea").width();
 
             orginalPortraitWidth = portraitwidth;
 
             if (portraitwidth >= croppingWidth)
             {
-                var reduceratio = 40;
+                var reduceratio = 80;
                 scaleddownMaxPortraitwidth = croppingWidth/100*reduceratio;
-                $("#userPortrait").width(scaleddownMaxPortraitwidth);
+                $(this).width(scaleddownMaxPortraitwidth);
 
-                $("#imgZoomslider").bootstrapSlider("setValue",100);
-            }
-
+                $("#imgZoomslider").bootstrapSlider("setValue",reduceratio);
+            }	
+            
 			//adding resizing and dragging
 			//$("#userPortrait").draggable({ width: portraitwidth, height: portraitheight, appendTo:"#cropping-area", scroll: false })
 
@@ -216,8 +217,8 @@ function generateImage()
             source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
             x: 50,
             y: 50,
-            width: "90",
-            height: "90"
+            width: 90,
+            height: 90
             })
         .drawText({
             font: '13pt sans-serif',
@@ -240,7 +241,7 @@ function generateImage()
         .drawImage({
             source: dread,
             x: potraitWidth*ratioPortrait,
-            y: potraitHeight,					
+            y: potraitHeight-(potraitWidth*ratioPortrait)*-1,					
             width: dreadwidth,
             height: dreadHeight,
             rotate: userDreadAngle
@@ -248,7 +249,7 @@ function generateImage()
 
     var dddddd  = $("#canvas").getCanvasImage('png');
     console.log(dddddd);
-    $("#dwlDreadLink").attr("href", dddddd);
+    $("#dwlDreadLink").attr("href", dddddd.source);
 }
 
 //Exif Metadata handling

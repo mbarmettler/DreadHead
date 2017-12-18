@@ -28,22 +28,20 @@
 }
 .cropping-area {    
 	overflow: overlay;
-	padding-top: 40px;
-    padding-bottom: 40px;
+	padding: 40px;
 	border-style: dashed;
 	border-width: 2px;
 	border-color:lightgray;
 	background: white;
 	min-height: 300px;
 	flex: 1;
-	display: flex;
+	/* display: flex; */
     align-items: center;
     justify-content: center;
  }
 
 #userDreads{
 	cursor: move;
-	width: 40%;
 	min-width: 50px;
 	z-index: 2;
 }

@@ -99,7 +99,8 @@ $(function () {
 
   			dreadImgsrc.parent().rotatable(options);
 			dreadImgsrc.parent().css("z-index", 1);
-			dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:false});		
+			// dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:false});	
+			dreadImgsrc.parent().draggable({ scroll:false});		
 
 			//place rotatable icon on top left
 			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
@@ -125,19 +126,13 @@ $(function () {
 		$("#imgZoomslider").on("slideStop", function(slideEvt) {
 			//alert(slideEvt.value);	
 			var userportrait =  $("#userPortrait");		
+			var croppingWidth =  $("#croppingArea").width();
 			var ratio = slideEvt.value;
 			var oneProc = scaleddownMaxPortraitwidth/100;
 			var newWidth = oneProc*ratio;
-			if(newWidth < scaleddownMaxPortraitwidth)
+			if(newWidth >= 200 && newWidth < croppingWidth)
 			{
-				if(newWidth >= 200)
-				{
-					userportrait.width(newWidth);
-				}
-			}
-			else
-			{
-				userportrait.width(scaleddownMaxPortraitwidth);
+				userportrait.width(newWidth);
 			}
 		});
 			
@@ -160,7 +155,7 @@ $(function () {
             <div class="col-md-8">
                 <div class="jumbotron">
 					<div id="croppingArea" class="cropping-area"></div>
-					<input type="text" id="imgZoomslider" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="10" />
+					<input type="text" id="imgZoomslider" data-slider-min="1" data-slider-max="200" data-slider-step="1" data-slider-value="10" />
 					<h3><span class="label label-outline-default">1</span> 
 						choose your portrait
 					</h3>
