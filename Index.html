@@ -1,11 +1,12 @@
 ﻿<!DOCTYPE html>
-<html>
+<html manifest="test.appcache">
 <head>
     <title>DreadHead App</title>
     <meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Dread-ur-head app shows you how it would look like, if you would have dreads.">	
 	<meta name="developper" content="Mike Barmettler">
+	
 
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> 
 
@@ -58,7 +59,9 @@ a.thumbnail.active {
 </style>
 <script>
 $(function () {			
-		
+		var currentPortraitSclae = 1.0;
+
+
 		//init DreadSelectionList
 		initializeDreadSelectionList(dreadSelectionArray);		
 	
@@ -122,6 +125,30 @@ $(function () {
 			 
 		});
 		
+		$("#zoomplus").on("click", function(e){
+			var newValue = currentPortraitSclae + 0.15;
+			$('#userPortrait').css({
+			'-webkit-transform' : 'scale(' + newValue + ')',
+			'-moz-transform'    : 'scale(' + newValue + ')',
+			'-ms-transform'     : 'scale(' + newValue + ')',
+			'-o-transform'      : 'scale(' + newValue + ')',
+			'transform'         : 'scale(' + newValue + ')'
+			});
+			currentPortraitSclae = newValue;
+		});
+
+		$("#zoomminus").on("click", function(e){
+			var newValue = currentPortraitSclae - 0.15;
+			$('#userPortrait').css({
+			'-webkit-transform' : 'scale(' + newValue + ')',
+			'-moz-transform'    : 'scale(' + newValue + ')',
+			'-ms-transform'     : 'scale(' + newValue + ')',
+			'-o-transform'      : 'scale(' + newValue + ')',
+			'transform'         : 'scale(' + newValue + ')'
+			});
+			currentPortraitSclae = newValue;
+		});
+
 		//update slider
 		$("#imgZoomslider").on("slideStop", function(slideEvt) {
 			//alert(slideEvt.value);	
@@ -135,7 +162,16 @@ $(function () {
 				userportrait.width(newWidth);
 			}
 		});
-			
+
+		if(window.applicationCache)
+		{
+			window.applicationCache.addEventListener("updateready", function(){
+				if(confirm("An update is available. Reload now?"))
+				{
+					window.location.reload();
+				}
+			})
+		}	
 	//end of doc ready
 	});
 	
@@ -155,6 +191,8 @@ $(function () {
             <div class="col-md-8">
                 <div class="jumbotron">
 					<div id="croppingArea" class="cropping-area"></div>
+					<button id="zoomplus">zoom +</button>
+					<button id="zoomminus">zoom -</button>
 					<input type="text" id="imgZoomslider" data-slider-min="1" data-slider-max="200" data-slider-step="1" data-slider-value="10" />
 					<h3><span class="label label-outline-default">1</span> 
 						choose your portrait

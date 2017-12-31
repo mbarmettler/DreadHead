@@ -10,7 +10,7 @@ var dreadSelectionArray = ["Dreads (1).png", "Dreads (2).png", "Dreads (3).png",
 var orginalPortraitWidth = 0;
 var scaleddownMaxPortraitwidth = 0;
 var portraitexiforientation = -1;
-
+var initialresizeportrait = false;
 //
 //Main function
 //
@@ -133,7 +133,7 @@ function readImage (file) {
 
             //append portrait slider
             $(".slider").css("display", "block");                   
-
+if(initialresizeportrait){
 			var portraitwidth = $(this).width();
             var portraitheight = $(this).height();
             var croppingWidth = $("#croppingArea").width();
@@ -148,9 +148,9 @@ function readImage (file) {
 
                 $("#imgZoomslider").bootstrapSlider("setValue",reduceratio);
             }	
-            
+        }
 			//adding resizing and dragging
-			//$("#userPortrait").draggable({ width: portraitwidth, height: portraitheight, appendTo:"#cropping-area", scroll: false })
+			$("#userPortrait").draggable({ appendTo:"#cropping-area", scroll: true })
 
 			// If we set the variable `useBlob` to true:
 			// (Data-URLs can end up being really large
