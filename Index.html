@@ -191,9 +191,8 @@ $(function () {
             <div class="col-md-8">
                 <div class="jumbotron">
 					<div id="croppingArea" class="cropping-area"></div>
-					<button id="zoomplus">zoom +</button>
-					<button id="zoomminus">zoom -</button>
-					<input type="text" id="imgZoomslider" data-slider-min="1" data-slider-max="200" data-slider-step="1" data-slider-value="10" />
+					<button id="zoomplus" class="btn btn-success"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
+					<button id="zoomminus" class="btn btn-success"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
 					<h3><span class="label label-outline-default">1</span> 
 						choose your portrait
 					</h3>
@@ -204,7 +203,7 @@ $(function () {
 					<br/><br/>
 
 					<h3><span class="label label-outline-default">3</span> save or share with friends</h3>					
-					<button class="btn btn-success disabled" id="dwlBtn"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+					<button class="btn btn-success disabled" id="dwlBtn">
 						save
 					</button>
 					<a href="#shareModal" role="button" class="btn btn-primary disabled" data-toggle="modal" id="shareBtn"><i class="fa fa-share-alt" aria-hidden="true"></i>

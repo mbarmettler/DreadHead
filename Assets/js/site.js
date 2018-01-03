@@ -131,8 +131,10 @@ function readImage (file) {
 			// Finally append our created image and the HTML info string to our `#preview` 
 			$("#croppingArea").append(this);		
 
-            //append portrait slider
-            $(".slider").css("display", "block");                   
+            //activate zoom buttons
+            $("#zoomplus").css("display", "inline-block");      
+            $("#zoomminus").css("display", "inline-block");       
+
 if(initialresizeportrait){
 			var portraitwidth = $(this).width();
             var portraitheight = $(this).height();
@@ -150,7 +152,7 @@ if(initialresizeportrait){
             }	
         }
 			//adding resizing and dragging
-			$("#userPortrait").draggable({ appendTo:"#cropping-area", scroll: true })
+			$("#userPortrait").draggable({ appendTo:"#cropping-area" })
 
 			// If we set the variable `useBlob` to true:
 			// (Data-URLs can end up being really large

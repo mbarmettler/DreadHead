@@ -23,22 +23,18 @@
 	position: absolute;
 	z-index: -1;
 }
-.slider-selection {
-	background: lightblue;;
-}
 .cropping-area {    
-	overflow: overlay;
+	overflow: hidden;
 	padding: 40px;
 	border-style: dashed;
 	border-width: 2px;
 	border-color:lightgray;
 	background: white;
-	min-height: 300px;
-	max-height: 900px;
+	height: 600px;
 	flex: 1;
-	/* display: flex; */
     align-items: center;
-    justify-content: center;
+	justify-content: center;	
+	/* display: flex; */
  }
 
 #userDreads{
@@ -51,7 +47,7 @@
 	z-index: 0;
 }
 
-.slider{
+#zoomplus, #zoomminus{
 	display: none;
 }
 
