@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html manifest="test.appcache">
+<html>
 <head>
     <title>DreadHead App</title>
     <meta charset="utf-8" />
@@ -36,6 +36,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/20.1.4/min/jcanvas-handles.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/20.1.4/min/jcanvas-hearts.min.js"></script>
 
+	<!-- <script src="libs/html2canvas.min.js"></script> -->
 
 	<!--bs slider-->
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
@@ -46,118 +47,31 @@
 
 	<!-- site scripts -->
 	<script src="Assets/js/site.js"></script>
-<style>
-	a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
-    border-color: #BADA55;
-}
-a.thumbnail.active {
-	background-color: #BADA55;
-}
-.thumbnail{
-	width: 200px;
-}
-</style>
-<script>
-$(function () {			
-		var currentPortraitScale = 1.0;
 
-		//init DreadSelectionList
-		initializeDreadSelectionList(dreadSelectionArray);		
-									
-		//selecting dreads and add to cropping area
-		$(".thumbnail").on("click", function(){	
-			if(!$(this).hasClass('active'))
-			{ 		
-				$(".thumbnail").removeClass("active");
-				$(this).addClass("active");
-			}
-			
-		 	$(".ui-wrapper img").remove();
+	<script>
+		$(function () {			
+
+			//init DreadSelectionList
+			initializeDreadSelectionList(dreadSelectionArray);		
+										
+			//render with watermark & download image locally
+			$("#dwlBtn").on("click", function(e) {
+				e.preventDefault();  //stop the browser from following
+
+				generateImage();
+			});
+
+			//share image
+			$("#shareBtn").on("click", function (e) {
+				e.preventDefault();  //stop the browser from following
+				
+			});			
+
 	
-			//prepare dread img from selectionlist
-			//replace thumbnail with original img
-			var dreadImgsrc = $(this).find('img').clone();
-			var orginalDreadImgSrc = dreadImgsrc.attr("src").replace("thumbs/","");
-			dreadImgsrc.attr("src", orginalDreadImgSrc);
-
-			dreadImgsrc.removeClass();
-			dreadImgsrc.prop("id", "userDreads");	
-
-			//add new dread selection
-			$("#croppingArea").append(dreadImgsrc);						
-			
-			var options = {
-			  rotationCenterOffset: {
-					top: 0,
-					left: 0
-				}
-			};
-						
-			//adding img editing options				
-			dreadImgsrc.resizable({ handles: "ne" });
-
-  			dreadImgsrc.parent().rotatable(options);
-			dreadImgsrc.parent().css("z-index", 1);
-			// dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:false});	
-			dreadImgsrc.parent().draggable({ scroll:false});		
-
-			//place rotatable icon on top left
-			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
-
-			//enable functional buttons
-			$('.btn').removeClass("disabled");		
-		});					
-		
-		//render with watermark & download image locally
-		$("#dwlBtn").on("click", function(e) {
-			e.preventDefault();  //stop the browser from following
-			
-			generateImage();
-		});
-
-		//share image
-		$("#shareBtn").on("click", function (e) {
-			e.preventDefault();  //stop the browser from following
-			 
+		//end of doc ready
 		});
 		
-		$("#zoomplus").on("click", function(e){
-			var newValue = currentPortraitScale + 0.15;
-			$('#userPortrait').css({
-			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-o-transform'      : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'transform'         : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)'
-			});
-			currentPortraitScale = newValue;
-		});
-
-		$("#zoomminus").on("click", function(e){
-			var newValue = currentPortraitScale - 0.15;
-			$('#userPortrait').css({
-			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-o-transform'      : 'scale(' + newValue + ')  rotate('+ rotationDegree +'deg)',
-			'transform'         : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)'
-			});
-			currentPortraitScale = newValue;
-		});
-
-		if(window.applicationCache)
-		{
-			window.applicationCache.addEventListener("updateready", function(){
-				if(confirm("An update is available. Reload now?"))
-				{
-					window.location.reload();
-				}
-			})
-		}	
-	//end of doc ready
-	});
-	
-</script>
+	</script>
 </head>
 
 <body>

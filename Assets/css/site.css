@@ -39,10 +39,12 @@
 
 #userDreads{
 	cursor: move;
+	position: relative;
 	min-width: 50px;
 	z-index: 2;
 }
 #userPortrait{
+	cursor: move;
 	position: relative;
 	z-index: 0;
 }
@@ -81,6 +83,15 @@ canvas{
 	background-image: url(../img/resize.png);
 }
 
+a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
+    border-color: #BADA55;
+}
+a.thumbnail.active {
+	background-color: #BADA55;
+}
+.thumbnail{
+	width: 200px;
+}
 .label-outline-default {
 	border-radius: 10px;
     border: 2px solid #d1ef70;

@@ -12,6 +12,8 @@ var scaleddownMaxPortraitwidth = 0;
 var portraitexiforientation = -1;
 var initialresizeportrait = false;
 var rotationDegree = 0;
+var currentPortraitScale = 1.0;
+
 //
 //Main function
 //
@@ -64,6 +66,74 @@ $(function () {
     
         //initialize DreadSelectionList
         initializeDreadSelectionList(dreadSelectionArray);
+        
+        $("#zoomplus").on("click", function(e){
+			var newValue = currentPortraitScale + 0.15;
+			$('#userPortrait').css({
+			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-o-transform'      : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'transform'         : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)'
+			});
+			currentPortraitScale = newValue;
+		});
+
+		$("#zoomminus").on("click", function(e){
+			var newValue = currentPortraitScale - 0.15;
+			$('#userPortrait').css({
+			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-o-transform'      : 'scale(' + newValue + ')  rotate('+ rotationDegree +'deg)',
+			'transform'         : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)'
+			});
+			currentPortraitScale = newValue;
+        });
+        
+        //selecting dreads and add to cropping area
+		$(".thumbnail").on("click", function(){	
+			if(!$(this).hasClass('active'))
+			{ 		
+				$(".thumbnail").removeClass("active");
+				$(this).addClass("active");
+			}
+			
+		 	$(".ui-wrapper img").remove();
+	
+			//prepare dread img from selectionlist
+			//replace thumbnail with original img
+			var dreadImgsrc = $(this).find('img').clone();
+			var orginalDreadImgSrc = dreadImgsrc.attr("src").replace("thumbs/","");
+			dreadImgsrc.attr("src", orginalDreadImgSrc);
+
+			dreadImgsrc.removeClass();
+			dreadImgsrc.prop("id", "userDreads");	
+
+			//add new dread selection
+            $("#croppingArea").append(dreadImgsrc);						
+            dreadImgsrc.prependTo("#croppingArea");
+			
+			var options = {
+			  rotationCenterOffset: {
+					top: 0,
+					left: 0
+				}
+			};
+						
+			//adding img editing options				
+			dreadImgsrc.resizable({ handles: "ne" });
+
+  			dreadImgsrc.parent().rotatable(options);
+			dreadImgsrc.parent().css("z-index", 1);
+			dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:true});		
+
+			//place rotatable icon on top left
+			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
+
+			//enable functional buttons
+			$('.btn').removeClass("disabled");		
+		});		
         
         // end document ready
     });
@@ -169,8 +239,6 @@ if(initialresizeportrait){
 
                 scaleddownMaxPortraitwidth = croppingWidth/100*80;
                 $(this).width(scaleddownMaxPortraitwidth);
-
-                $("#imgZoomslider").bootstrapSlider("setValue", 80);
             }	
         }
 			//adding resizing and dragging
@@ -202,16 +270,17 @@ function initializeDreadSelectionList(dreadSelectionArray) {
 
 function generateImage()
 {    
+
     var dread = $("#userDreads").attr("src");
     var portrait = $("#userPortrait").attr('src');
 
     var userDreadAngle = getCurrentRotationFixed("userDreads", true);
     var portraitAngle = getCurrentRotationFixed("userPortrait", false);
-
+        
     //Forces it to be parsed as a decimal number, otherwise strings beginning with '0' might be parsed as an octal number 
     //(might depend on the browser used)
-    var dreadLeftPos = parseInt($("#userDreads").parent(".ui-wrapper").css("left"), 10)+200;
-    var dreadTopPos = (parseInt($('#userDreads').parent(".ui-wrapper").css('top'), 10)*-1)-40;
+    var dreadLeftPos = parseInt($("#userDreads").parent(".ui-wrapper").css("left"), 10);
+    var dreadTopPos = parseInt($('#userDreads').parent(".ui-wrapper").css('top'), 10);
 
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
@@ -225,8 +294,8 @@ function generateImage()
     //portrait is prerotated by App
     if(portraitAngle > 0){        
         if($("#userPortrait").width() > $("#userPortrait").height()){
-            potraitWidth =  $("#userPortrait").width();
-            potraitHeight =  $("#userPortrait").height();
+            potraitWidth =  $("#userPortrait").width()*currentPortraitScale;;
+            potraitHeight =  $("#userPortrait").height()*currentPortraitScale;;
             ratioPortrait =  potraitWidth / potraitHeight;
         }
         else{
@@ -236,8 +305,8 @@ function generateImage()
         }
     }
     else{
-        potraitWidth =  $("#userPortrait").width();
-        potraitHeight =  $("#userPortrait").height();
+        potraitWidth =  $("#userPortrait").width()*currentPortraitScale;
+        potraitHeight =  $("#userPortrait").height()*currentPortraitScale;
     }
 
    
@@ -253,14 +322,7 @@ function generateImage()
     //clear canvas before rendering
     $("#canvas").clearCanvas();
 
-//old
-    $("#canvas").drawImage({
-            source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
-            x: 50,
-            y: 50,
-            width: 90,
-            height: 90
-            })
+    $("#canvas")
         .drawImage({
             source: portrait,	
             x: 250,
@@ -272,11 +334,18 @@ function generateImage()
         })
         .drawImage({
             source: dread,
-            x: dreadLeftPos,
-            y: dreadTopPos+40,					
+            x: (dreadwidth*ratioDread),
+            y: (dreadHeight*ratioDread),					
             width: dreadwidth,
             height: dreadHeight,
             rotate: userDreadAngle
+        })
+        .drawImage({
+            source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
+            x: 50,
+            y: 50,
+            width: 90,
+            height: 90
         })
         .drawText({
             font: '13pt sans-serif',
@@ -287,55 +356,7 @@ function generateImage()
             align: 'left',
             strokeWidth: 1,
             text: "dreadlocks-artesenal.ch"
-        }).restoreCanvas();   
-        
-    // $("#canvas")
-    // .addLayer({
-    //     type: 'image',
-    //     name: 'logo',
-    //     source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
-    //     x: 50,
-    //     y: 50,
-    //     width: 90,
-    //     height: 90
-    // })
-    // .addLayer({ 
-    //     type: 'text',
-    //     name: 'watermarkfooter',
-    //     font: '13pt sans-serif',
-    //     fillStyle: '#333333',
-    //     strokeStyle: '#75a62b',
-    //     x: 90,	
-    //     y: potraitHeight+200,
-    //     align: 'left',
-    //     strokeWidth: 1,
-    //     text: "dreadlocks-artesenal.ch"
-    // })
-    // .addLayer({ 
-    //     type: 'image',
-    //     name: 'portrait',
-    //     index: 0,
-    //     source: portrait,	
-    //     x: potraitHeight-150,
-    //     y: potraitHeight,
-    //     width: potraitWidth,
-    //     height: potraitHeight,
-    //     rotate: portraitAngle
-    // })
-    // .addLayer({
-    //     type: 'image',
-    //     name: 'dreads',
-    //     source: dread,
-    //     x: dreadLeftPos,
-    //     y: dreadTopPos,					
-    //     width: dreadwidth,
-    //     height: dreadHeight,
-    //     rotate: userDreadAngle
-    // }).restoreCanvas();   
-
-    // var dddddd  = $("#canvas").getCanvasImage('png');
-    // console.log(dddddd);
-    // $("#dwlDreadLink").attr("href", dddddd.source);
+        }).restoreCanvas();           
 }
 
 //Exif Metadata handling
