@@ -11,6 +11,7 @@ var orginalPortraitWidth = 0;
 var scaleddownMaxPortraitwidth = 0;
 var portraitexiforientation = -1;
 var initialresizeportrait = false;
+var rotationDegree = 0;
 //
 //Main function
 //
@@ -100,31 +101,30 @@ function readImage (file) {
             $("#croppingArea").empty();       
 
             //exif metadata rotation applying
-            var degree = 0;
             switch (portraitexiforientation) {
                 case 1:
-                    degree = 0;
+                rotationDegree = 0;
                     break;
                 case 2:
-                    degree = 0;
+                rotationDegree = 0;
                     break;
                 case 3:
-                    degree = 180;
+                rotationDegree = 180;
                     break;
                 case 4:
-                    degree = 180;
+                rotationDegree = 180;
                     break;
                 case 5:
-                    degree = 90;
+                rotationDegree = 90;
                     break;
                 case 6:
-                    degree = 90;
+                rotationDegree = 90;
                     break;
                 case 7:
-                    degree = 270;
+                rotationDegree = 270;
                     break;
                 case 8:
-                    degree = 270;
+                rotationDegree = 270;
                     break;
             }
 
@@ -139,8 +139,8 @@ function readImage (file) {
 			var portraitwidth = $("#userPortrait").width();
             var portraitheight = $("#userPortrait").height();
             
-            if(degree > 0) {
-                $(this).css('transform', 'rotate('+ degree +'deg)')
+            if(rotationDegree > 0) {
+                $(this).css('transform', 'rotate('+ rotationDegree +'deg)')
                 //switch height and width after rotated
                 portraitwidth = $("#userPortrait").height();
                 portraitheight = $("#userPortrait").width();

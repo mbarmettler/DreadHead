@@ -38,8 +38,8 @@
 
 
 	<!--bs slider-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css"  type="text/css">
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css"  type="text/css"> -->
 	
 	<!--app style-->
 	<link rel="stylesheet" href="Assets/css/site.css" type="text/css">	
@@ -59,14 +59,10 @@ a.thumbnail.active {
 </style>
 <script>
 $(function () {			
-		var currentPortraitSclae = 1.0;
-
+		var currentPortraitScale = 1.0;
 
 		//init DreadSelectionList
 		initializeDreadSelectionList(dreadSelectionArray);		
-	
-		// Instantiate a slider
-		$("#imgZoomslider").bootstrapSlider();			
 									
 		//selecting dreads and add to cropping area
 		$(".thumbnail").on("click", function(){	
@@ -126,41 +122,27 @@ $(function () {
 		});
 		
 		$("#zoomplus").on("click", function(e){
-			var newValue = currentPortraitSclae + 0.15;
+			var newValue = currentPortraitScale + 0.15;
 			$('#userPortrait').css({
-			'-webkit-transform' : 'scale(' + newValue + ')',
-			'-moz-transform'    : 'scale(' + newValue + ')',
-			'-ms-transform'     : 'scale(' + newValue + ')',
-			'-o-transform'      : 'scale(' + newValue + ')',
-			'transform'         : 'scale(' + newValue + ')'
+			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-o-transform'      : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'transform'         : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)'
 			});
-			currentPortraitSclae = newValue;
+			currentPortraitScale = newValue;
 		});
 
 		$("#zoomminus").on("click", function(e){
-			var newValue = currentPortraitSclae - 0.15;
+			var newValue = currentPortraitScale - 0.15;
 			$('#userPortrait').css({
-			'-webkit-transform' : 'scale(' + newValue + ')',
-			'-moz-transform'    : 'scale(' + newValue + ')',
-			'-ms-transform'     : 'scale(' + newValue + ')',
-			'-o-transform'      : 'scale(' + newValue + ')',
-			'transform'         : 'scale(' + newValue + ')'
+			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
+			'-o-transform'      : 'scale(' + newValue + ')  rotate('+ rotationDegree +'deg)',
+			'transform'         : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)'
 			});
-			currentPortraitSclae = newValue;
-		});
-
-		//update slider
-		$("#imgZoomslider").on("slideStop", function(slideEvt) {
-			//alert(slideEvt.value);	
-			var userportrait =  $("#userPortrait");		
-			var croppingWidth =  $("#croppingArea").width();
-			var ratio = slideEvt.value;
-			var oneProc = scaleddownMaxPortraitwidth/100;
-			var newWidth = oneProc*ratio;
-			if(newWidth >= 200 && newWidth < croppingWidth)
-			{
-				userportrait.width(newWidth);
-			}
+			currentPortraitScale = newValue;
 		});
 
 		if(window.applicationCache)
