@@ -93,8 +93,11 @@ function readImage (file) {
 		var image  = new Image();
 		image.crossOrigin = "anonymous";
 		image.addEventListener("load", function () {
-            //remove old portrait
-            $("#userPortrait").remove();       
+
+            var croppingWidth = $("#croppingArea").width();
+
+            //remove old images
+            $("#croppingArea").empty();       
 
             //exif metadata rotation applying
             var degree = 0;
@@ -124,16 +127,27 @@ function readImage (file) {
                     degree = 270;
                     break;
             }
-            $(this).css('transform', 'rotate('+ degree +'deg)')        
+
             $(this).prop("id", "userPortrait");	        
                             
-       ///todo append image at end of this     
 			// Finally append our created image and the HTML info string to our `#preview` 
 			$("#croppingArea").append(this);		
 
             //activate zoom buttons
             $("#zoomplus").css("display", "inline-block");      
             $("#zoomminus").css("display", "inline-block");       
+			var portraitwidth = $("#userPortrait").width();
+            var portraitheight = $("#userPortrait").height();
+            
+            if(degree > 0) {
+                $(this).css('transform', 'rotate('+ degree +'deg)')
+                //switch height and width after rotated
+                portraitwidth = $("#userPortrait").height();
+                portraitheight = $("#userPortrait").width();
+             }
+
+            //append portrait slider
+            $(".slider").css("display", "block");      
 
 if(initialresizeportrait){
 			var portraitwidth = $(this).width();
@@ -143,12 +157,20 @@ if(initialresizeportrait){
             orginalPortraitWidth = portraitwidth;
 
             if (portraitwidth >= croppingWidth)
-            {
-                var reduceratio = 80;
-                scaleddownMaxPortraitwidth = croppingWidth/100*reduceratio;
+            {        
+                var ratioPortrait = 0;
+
+                if(portraitwidth > portraitheight) {
+                    ratioPortrait =  portraitwidth / portraitheight;
+                }
+                else{
+                    ratioPortrait = portraitheight / portraitwidth;
+                }
+
+                scaleddownMaxPortraitwidth = croppingWidth/100*80;
                 $(this).width(scaleddownMaxPortraitwidth);
 
-                $("#imgZoomslider").bootstrapSlider("setValue",reduceratio);
+                $("#imgZoomslider").bootstrapSlider("setValue", 80);
             }	
         }
 			//adding resizing and dragging
@@ -186,35 +208,52 @@ function generateImage()
     var userDreadAngle = getCurrentRotationFixed("userDreads", true);
     var portraitAngle = getCurrentRotationFixed("userPortrait", false);
 
+    //Forces it to be parsed as a decimal number, otherwise strings beginning with '0' might be parsed as an octal number 
+    //(might depend on the browser used)
+    var dreadLeftPos = parseInt($("#userDreads").parent(".ui-wrapper").css("left"), 10)+200;
+    var dreadTopPos = (parseInt($('#userDreads').parent(".ui-wrapper").css('top'), 10)*-1)-40;
+
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
 
-    var potraitWidth =  $("#userPortrait").width();
-    var potraitHeight =  $("#userPortrait").height();
-
-    // var ratioDread = 0;
-    // if($("#userDreads").width() > $("#userDreads").height())
-    // {
-    //     ratioDread =  dreadwidth / dreadHeight;
-    // }
-    // if($("#userDreads").height() > $("#userDreads").width())
-    // {
-    //     ratioDread = potraitHeight / potraitWidth;
-    // }
-
+    var ratioDread = 0;    
     var ratioPortrait = 0;
-    if($("#userPortrait").width() > $("#userPortrait").height())
-    {
-        ratioPortrait =  dreadwidth / dreadHeight;
+
+    var potraitWidth = 0;
+    var potraitHeight = 0;
+
+    //portrait is prerotated by App
+    if(portraitAngle > 0){        
+        if($("#userPortrait").width() > $("#userPortrait").height()){
+            potraitWidth =  $("#userPortrait").width();
+            potraitHeight =  $("#userPortrait").height();
+            ratioPortrait =  potraitWidth / potraitHeight;
+        }
+        else{
+            potraitWidth = $("#userPortrait").height();
+            potraitHeight = $("#userPortrait").width();
+            ratioPortrait = potraitHeight / potraitWidth;
+        }
     }
-    if($("#userPortrait").height() > $("#userPortrait").width())
+    else{
+        potraitWidth =  $("#userPortrait").width();
+        potraitHeight =  $("#userPortrait").height();
+    }
+
+   
+    if($("#userDreads").width() > $("#userDreads").height())
     {
-        ratioPortrait = potraitHeight / potraitWidth;
+        ratioDread =  dreadwidth / dreadHeight;
+    }
+    if($("#userDreads").height() > $("#userDreads").width())
+    {
+        ratioDread = potraitHeight / potraitWidth;
     }
 
     //clear canvas before rendering
     $("#canvas").clearCanvas();
-    
+
+//old
     $("#canvas").drawImage({
             source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
             x: 50,
@@ -222,36 +261,81 @@ function generateImage()
             width: 90,
             height: 90
             })
-        .drawText({
-            font: '13pt sans-serif',
-            fillStyle: '#333333',
-            strokeStyle: '#75a62b',
-            x: 100,	
-            y: dreadHeight+100,
-            align: 'left',
-            strokeWidth: 1,
-            text: "dreadlocks-artesenal.ch"
-        })
         .drawImage({
             source: portrait,	
-            x: potraitWidth-180,
-            y: potraitHeight,
+            x: 250,
+            y: 250,
             width: potraitWidth,
             height: potraitHeight,
+            index: 0,
             rotate: portraitAngle
         })
         .drawImage({
             source: dread,
-            x: potraitWidth*ratioPortrait,
-            y: potraitHeight-(potraitWidth*ratioPortrait)*-1,					
+            x: dreadLeftPos,
+            y: dreadTopPos+40,					
             width: dreadwidth,
             height: dreadHeight,
             rotate: userDreadAngle
+        })
+        .drawText({
+            font: '13pt sans-serif',
+            fillStyle: '#333333',
+            strokeStyle: '#75a62b',
+            x: 90,	
+            y: 550,
+            align: 'left',
+            strokeWidth: 1,
+            text: "dreadlocks-artesenal.ch"
         }).restoreCanvas();   
+        
+    // $("#canvas")
+    // .addLayer({
+    //     type: 'image',
+    //     name: 'logo',
+    //     source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
+    //     x: 50,
+    //     y: 50,
+    //     width: 90,
+    //     height: 90
+    // })
+    // .addLayer({ 
+    //     type: 'text',
+    //     name: 'watermarkfooter',
+    //     font: '13pt sans-serif',
+    //     fillStyle: '#333333',
+    //     strokeStyle: '#75a62b',
+    //     x: 90,	
+    //     y: potraitHeight+200,
+    //     align: 'left',
+    //     strokeWidth: 1,
+    //     text: "dreadlocks-artesenal.ch"
+    // })
+    // .addLayer({ 
+    //     type: 'image',
+    //     name: 'portrait',
+    //     index: 0,
+    //     source: portrait,	
+    //     x: potraitHeight-150,
+    //     y: potraitHeight,
+    //     width: potraitWidth,
+    //     height: potraitHeight,
+    //     rotate: portraitAngle
+    // })
+    // .addLayer({
+    //     type: 'image',
+    //     name: 'dreads',
+    //     source: dread,
+    //     x: dreadLeftPos,
+    //     y: dreadTopPos,					
+    //     width: dreadwidth,
+    //     height: dreadHeight,
+    //     rotate: userDreadAngle
+    // }).restoreCanvas();   
 
-    var dddddd  = $("#canvas").getCanvasImage('png');
-    console.log(dddddd);
-    $("#dwlDreadLink").attr("href", dddddd.source);
+    // var dddddd  = $("#canvas").getCanvasImage('png');
+    // console.log(dddddd);
+    // $("#dwlDreadLink").attr("href", dddddd.source);
 }
 
 //Exif Metadata handling
@@ -322,7 +406,7 @@ function getCurrentRotationFixed( elid, searchOnParent)
     }
 
     if( tr !== "none") {
-      console.log('Matrix: ' + tr);
+      //console.log('Matrix: ' + tr);
   
       var values = tr.split('(')[1];
         values = values.split(')')[0];
@@ -353,6 +437,6 @@ function getCurrentRotationFixed( elid, searchOnParent)
     }
   
     // works!
-    console.log('Rotate: ' + angle + 'deg');
+    //console.log('Rotate: ' + angle + 'deg');
     return angle;   
   }
