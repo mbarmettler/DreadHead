@@ -110,8 +110,7 @@ $(function () {
 			dreadImgsrc.removeClass();
 			dreadImgsrc.prop("id", "userDreads");	
 
-			//add new dread selection
-            $("#croppingArea").append(dreadImgsrc);						
+			//add new dread selection           			
             dreadImgsrc.prependTo("#croppingArea");
 			
 			var options = {
@@ -126,7 +125,7 @@ $(function () {
 
   			dreadImgsrc.parent().rotatable(options);
 			dreadImgsrc.parent().css("z-index", 1);
-			dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:true});		
+			dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:true });		
 
 			//place rotatable icon on top left
 			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
@@ -153,7 +152,6 @@ function readImage (file) {
 
 // Once a file is successfully readed:
 	reader.addEventListener("load", function () {
-
 	    // At this point `reader.result` contains already the Base64 Data-URL
 		// and we've could immediately show an image using
 		// `elPreview.insertAdjacentHTML("beforeend", "<img src='"+ reader.result +"'>");`
@@ -219,28 +217,28 @@ function readImage (file) {
             //append portrait slider
             $(".slider").css("display", "block");      
 
-if(initialresizeportrait){
-			var portraitwidth = $(this).width();
-            var portraitheight = $(this).height();
-            var croppingWidth = $("#croppingArea").width();
+            if(initialresizeportrait){
+                var portraitwidth = $(this).width();
+                var portraitheight = $(this).height();
+                var croppingWidth = $("#croppingArea").width();
 
-            orginalPortraitWidth = portraitwidth;
+                orginalPortraitWidth = portraitwidth;
 
-            if (portraitwidth >= croppingWidth)
-            {        
-                var ratioPortrait = 0;
+                if (portraitwidth >= croppingWidth)
+                {        
+                    // var ratioPortrait = 0;
 
-                if(portraitwidth > portraitheight) {
-                    ratioPortrait =  portraitwidth / portraitheight;
+                    // if(portraitwidth > portraitheight) {
+                    //     ratioPortrait =  portraitwidth / portraitheight;
+                    // }
+                    // else{
+                    //     ratioPortrait = portraitheight / portraitwidth;
+                    // }
+
+                    scaleddownMaxPortraitwidth = croppingWidth/100*80;
+                    $(this).width(scaleddownMaxPortraitwidth);
                 }
-                else{
-                    ratioPortrait = portraitheight / portraitwidth;
-                }
-
-                scaleddownMaxPortraitwidth = croppingWidth/100*80;
-                $(this).width(scaleddownMaxPortraitwidth);
-            }	
-        }
+            }
 			//adding resizing and dragging
 			$("#userPortrait").draggable({ appendTo:"#cropping-area" })
 
@@ -268,9 +266,9 @@ function initializeDreadSelectionList(dreadSelectionArray) {
     });
 }
 
+//generates Result Image (JCanvas)
 function generateImage()
 {    
-
     var dread = $("#userDreads").attr("src");
     var portrait = $("#userPortrait").attr('src');
 
@@ -316,7 +314,7 @@ function generateImage()
     }
     if($("#userDreads").height() > $("#userDreads").width())
     {
-        ratioDread = potraitHeight / potraitWidth;
+        ratioDread = dreadHeight / dreadwidth;
     }
 
     //clear canvas before rendering
@@ -334,8 +332,8 @@ function generateImage()
         })
         .drawImage({
             source: dread,
-            x: (dreadwidth*ratioDread),
-            y: (dreadHeight*ratioDread),					
+            x: (dreadwidth/ratioDread),
+            y: (dreadHeight/ratioDread),					
             width: dreadwidth,
             height: dreadHeight,
             rotate: userDreadAngle
@@ -399,7 +397,7 @@ function preRotateImage(file)
   binfR.readAsArrayBuffer(file);  
 }
 
-//calculates Degree value of Rotation Transformation Matrix
+//calculates Degree value of Rotation Transformation Matrix (css helper)
 function getCurrentRotationFixed( elid, searchOnParent) 
 {
     var el;
