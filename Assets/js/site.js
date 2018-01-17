@@ -10,7 +10,6 @@ var dreadSelectionArray = ["Dreads (1).png", "Dreads (2).png", "Dreads (3).png",
 var orginalPortraitWidth = 0;
 var scaleddownMaxPortraitwidth = 0;
 var portraitexiforientation = -1;
-var initialresizeportrait = false;
 var rotationDegree = 0;
 var currentPortraitScale = 1.0;
 
@@ -213,28 +212,8 @@ function readImage (file) {
                 portraitheight = $("#userPortrait").width();
              }
 
-            if(initialresizeportrait){
-                var portraitwidth = $(this).width();
-                var portraitheight = $(this).height();
-                var croppingWidth = $("#croppingArea").width();
+            $("#userPortrait").width($("#croppingArea").width());
 
-                orginalPortraitWidth = portraitwidth;
-
-                if (portraitwidth >= croppingWidth)
-                {        
-                    // var ratioPortrait = 0;
-
-                    // if(portraitwidth > portraitheight) {
-                    //     ratioPortrait =  portraitwidth / portraitheight;
-                    // }
-                    // else{
-                    //     ratioPortrait = portraitheight / portraitwidth;
-                    // }
-
-                    scaleddownMaxPortraitwidth = croppingWidth/100*80;
-                    $(this).width(scaleddownMaxPortraitwidth);
-                }
-            }
 			//adding resizing and dragging
 			$("#userPortrait").draggable({ appendTo:"#croppingArea" })
 
