@@ -103,15 +103,11 @@ $(function () {
 	
 			//prepare dread img from selectionlist
 			//replace thumbnail with original img
-			var dreadImgsrc = $(this).find('img').clone();
-			var orginalDreadImgSrc = dreadImgsrc.attr("src").replace("thumbs/","");
-			dreadImgsrc.attr("src", orginalDreadImgSrc);
+			var thumbdreadImgsrc = $(this).find('img').attr("src");
+			var orginalDreadImgSrc = thumbdreadImgsrc.replace("thumbs/","");     
 
-			dreadImgsrc.removeClass();
-			dreadImgsrc.prop("id", "userDreads");	
-
-			//add new dread selection           			
-            dreadImgsrc.prependTo("#croppingArea");
+			//add new dread            			
+            $("#croppingArea").prepend('<img id="userDreads" height="auto" width="45%" src="'+ orginalDreadImgSrc +'" />')
 			
 			var options = {
 			  rotationCenterOffset: {
@@ -119,13 +115,14 @@ $(function () {
 					left: 0
 				}
 			};
-						
-			//adding img editing options				
-			dreadImgsrc.resizable({ handles: "ne" });
 
-  			dreadImgsrc.parent().rotatable(options);
-			dreadImgsrc.parent().css("z-index", 1);
-			dreadImgsrc.parent().draggable({ appendTo: '#cropping-area', scroll:true });		
+			//adding img editing options				
+			$("#userDreads").resizable({ handles: "ne" });
+            $(".ui-wrapper").height("100%");
+            
+             $("#userDreads").parent().rotatable(options);
+			 $("#userDreads").parent().css("z-index", 1);
+			 $("#userDreads").parent().draggable({ appendTo: '#croppingArea', scroll:true });		
 
 			//place rotatable icon on top left
 			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
