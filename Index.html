@@ -59,6 +59,9 @@
 				e.preventDefault();  //stop the browser from following
 
 				generateImage();
+
+				$("#outputModal").modal("show");
+
 			});
 
 			//share image
@@ -72,9 +75,19 @@
 		});
 		
 	</script>
+<style>
+/* .teststyle {  
+		display: -webkit-box;
+		display: -moz-box;
+		display: -ms-flexbox;
+		display: -webkit-flex;
+		display: flex;
+		flex:1 0 auto;
+	} */
+	</style>
 </head>
 
-<body>
+<body>	
     <div class="container-fluid">
 		<div class="row">
 			<div class="col-md-1">	
@@ -98,25 +111,46 @@
 					</label>
 					<br/><br/>
 
-					<h3><span class="label label-outline-default">3</span> save or share with friends</h3>					
+					<h3><span class="label label-outline-default">3</span> generate </h3>					
 					<button class="btn btn-success disabled" id="dwlBtn">
-						save
+						<i class="fa fa-check" aria-hidden="true"></i> 
+						generate
 					</button>
-					<a href="#shareModal" role="button" class="btn btn-primary disabled" data-toggle="modal" id="shareBtn"><i class="fa fa-share-alt" aria-hidden="true"></i>
-						share
-					</a>
 				</div>
 				
 				<!--just for DEV testcases-->
-				<a id="dwlDreadLink" href="#" target="_blank">
+				<!-- <a id="dwlDreadLink" href="#" target="_blank">
 					<canvas id="canvas" width="900px" height="600px" style="border:1px dotted red" />
-				</a>
+				</a> -->
 			</div>
+
 			<div class="col-md-4"  style="padding-left: 0PX !important;">
 				<h3 class="special-header row"><span class="label label-outline-default">2</span> choos your dreads</h3>										
-				<div id="dreadSelectionList" class="row"/>
+				
+				<div id="dreadSelectionList" class="row teststyle" />
             </div>   			
 		</div>
+
+		<!--Modal Output-->
+		<div id="outputModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">	
+						<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+								<h3>Generated DreadHead</h3>
+						</div>
+						<div class="modal-body">
+							<canvas id="canvas" width="800px" height="600px" style="border:1px dotted red" />
+						</div>
+						<div class="modal-footer">
+								<button type="button" id="shareBtn" role="button" class="btn btn-info" data-toggle="modal"><i class="fa fa-share-alt" aria-hidden="true"></i>
+									share
+								</button>							
+								<button type="button" class="btn btn-success"><i class="fa fa-download" aria-hidden="true"></i>download</button>
+						</div>
+					</div>
+				</div>	
+			</div>
 	</div>
   <!-- end of container -->
 

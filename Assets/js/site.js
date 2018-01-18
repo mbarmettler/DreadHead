@@ -319,8 +319,8 @@ function generateImage()
         })
         .drawImage({
             source: dread,
-            x: dreadTopPos+250,
-            y: dreadLeftPos,					
+            x: dreadTopPos+220,
+            y: dreadLeftPos-30,					
             width: dreadwidth,
             height: dreadHeight,
             rotate: userDreadAngle
