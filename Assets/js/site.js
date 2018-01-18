@@ -106,7 +106,7 @@ $(function () {
 			var orginalDreadImgSrc = thumbdreadImgsrc.replace("thumbs/","");     
 
 			//add new dread            			
-            $("#croppingArea").prepend('<img id="userDreads" height="auto" width="45%" src="'+ orginalDreadImgSrc +'" />')
+            $("#croppingArea").prepend('<img id="userDreads" style="height: 100%; width:45%;" src="'+ orginalDreadImgSrc +'" />')
 			
 			var options = {
 			  rotationCenterOffset: {
@@ -116,15 +116,16 @@ $(function () {
 			};
 
 			//adding img editing options				
-			$("#userDreads").resizable({ handles: "ne" });
-            $(".ui-wrapper").height("100%");
+			$("#userDreads").resizable({ handles: "ne" });            
             
-             $("#userDreads").parent().rotatable(options);
+             //$("#userDreads").parent().rotatable(options);
 			 $("#userDreads").parent().css("z-index", 1);
 			 $("#userDreads").parent().draggable({ appendTo: '#croppingArea', scroll:true });		
 
 			//place rotatable icon on top left
 			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
+
+            $("#userDreads").attr("style", "height: 100%;");
 
 			//enable functional buttons
 			$('.btn').removeClass("disabled");		
@@ -254,6 +255,8 @@ function generateImage()
     //(might depend on the browser used)
     var dreadLeftPos = parseInt($("#userDreads").parent(".ui-wrapper").css("left"), 10);
     var dreadTopPos = parseInt($('#userDreads').parent(".ui-wrapper").css('top'), 10);
+    //console.log(dreadLeftPos);
+    //console.log(dreadTopPos);
 
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
@@ -295,6 +298,15 @@ function generateImage()
     //clear canvas before rendering
     $("#canvas").clearCanvas();
 
+    // .drawImage({
+    //     source: dread,
+    //     x: (dreadwidth/ratioDread),
+    //     y: (dreadHeight/ratioDread),					
+    //     width: dreadwidth,
+    //     height: dreadHeight,
+    //     rotate: userDreadAngle
+    // })
+
     $("#canvas")
         .drawImage({
             source: portrait,	
@@ -307,8 +319,8 @@ function generateImage()
         })
         .drawImage({
             source: dread,
-            x: (dreadwidth/ratioDread),
-            y: (dreadHeight/ratioDread),					
+            x: dreadTopPos+250,
+            y: dreadLeftPos,					
             width: dreadwidth,
             height: dreadHeight,
             rotate: userDreadAngle
