@@ -5,6 +5,8 @@
 
 //specify Dread Hair images on web folder /img/dreads/
 var dreadSelectionArray = ["Dreads (1).png", "Dreads (2).png", "Dreads (3).png", "Dreads (4).png", "Dreads (5).png", "Dreads (6).png", "Dreads (7).png", "Dreads (8).png", "Dreads (9).png", "Dreads (10).png", "Dreads (11).png", "Dreads (12).png", "Dreads (13).png", "Dreads (14).png", "Dreads (15).png", "Dreads (16).png", "Dreads (17).png"];
+//Path on FTP to the orginal Dreard photos
+var ftpPathToOrginalDreads = "Assets/img/dreads/"
 
 //global variables for image editing/sizing/transform
 var orginalPortraitWidth = 0;
@@ -90,6 +92,8 @@ $(function () {
 			currentPortraitScale = newValue;
         });
         
+  
+
         //selecting dreads and add to cropping area
 		$(".thumbnail").on("click", function(){	
 			if(!$(this).hasClass('active'))
@@ -98,16 +102,44 @@ $(function () {
 				$(this).addClass("active");
 			}
 			
-		 	$(".ui-wrapper img").remove();
-	
-			//prepare dread img from selectionlist
-			//replace thumbnail with original img
-			var thumbdreadImgsrc = $(this).find('img').attr("src");
-			var orginalDreadImgSrc = thumbdreadImgsrc.replace("thumbs/","");     
+             $(".ui-wrapper img").remove();             
 
-			//add new dread            			
-            $("#croppingArea").prepend('<img id="userDreads" style="height: 100%; width:45%;" src="'+ orginalDreadImgSrc +'" />')
-			
+			//prepare dread img from selectionlist (thumbs)
+			//create new img with orginal Dread photo
+            var thumbdreadImgsrc = $(this).find('img').attr("src");
+            var dreadPathArray = thumbdreadImgsrc.split('/'); 
+            var filename = dreadPathArray[dreadPathArray.length-1];
+
+            var orginalDreadImgSrc = ftpPathToOrginalDreads + filename;
+
+            var img = $('<img />', { 
+                id: 'userDreads',
+                src: orginalDreadImgSrc,
+                alt: 'dreadcanvas'
+              }).prependTo($('#croppingArea'));
+
+            var ratio = 0; 
+            var width = $("#userDreads").width();    // Current image width
+            var height = $("#userDreads").height();  // Current image height
+            var maxWidth = $("#croppingArea").width();
+            var maxHeight = $("#croppingArea").height();
+
+//Check if the current width is larger than the max
+// if(width > maxWidth){
+//     ratio = maxWidth / width;   // get ratio for scaling image
+//     $("#userDreads").css("width", maxWidth); // Set new width
+//     height = height * ratio;    // Reset height to match scaled image
+//     $("#userDreads").css("height", height);  // Scale height based on ratio   
+// }
+// Check if current height is larger than max
+if(height > maxHeight){
+    ratio = maxHeight / height; // get ratio for scaling image
+    $("#userDreads").css("height", maxHeight);   // Set new height
+    width = width * ratio;    // Reset width to match scaled image    
+    $("#userDreads").css("width", width);    // Scale width based on ratio
+}
+
+            //rotatable Options - defines angle of rotation
 			var options = {
 			  rotationCenterOffset: {
 					top: 0,
@@ -115,17 +147,23 @@ $(function () {
 				}
 			};
 
+            //resizable events
+            // ,
+            // create: function(event, ui){
+            //     console.log("create resizable")                  
+            // },
+            // resize: function( event, ui ) {
+            //     console.log("resize event")
+            //   }
+
 			//adding img editing options				
 			$("#userDreads").resizable({ handles: "ne" });            
-            
-             //$("#userDreads").parent().rotatable(options);
-			 $("#userDreads").parent().css("z-index", 1);
-			 $("#userDreads").parent().draggable({ appendTo: '#croppingArea', scroll:true });		
+            $("#userDreads").parent().rotatable(options);
+			$("#userDreads").parent().css("z-index", 1);
+			$("#userDreads").parent().draggable({ appendTo: '#croppingArea', scroll:true });		
 
 			//place rotatable icon on top left
 			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
-
-            $("#userDreads").attr("style", "height: 100%;");
 
 			//enable functional buttons
 			$('.btn').removeClass("disabled");		
