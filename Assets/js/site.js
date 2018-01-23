@@ -237,8 +237,7 @@ function readImage (file) {
 			$("#croppingArea").append(this);		
 
             //activate zoom buttons
-            $("#zoomplus").css("display", "inline-block");      
-            $("#zoomminus").css("display", "inline-block");  
+            $(".portraitZoomer").css("display", "inline-block");
 
 			var portraitwidth = $("#userPortrait").width();
             var portraitheight = $("#userPortrait").height();

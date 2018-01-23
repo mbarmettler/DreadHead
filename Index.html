@@ -116,10 +116,7 @@
 		</div>
 		<div class="row">
             <div class="col-md-8">
-                <div class="jumbotron">
-					<div id="croppingArea" class="cropping-area"></div>
-					<button id="zoomplus" class="btn btn-success"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
-					<button id="zoomminus" class="btn btn-success"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
+                <div class="jumbotron">					
 					<h3><span class="label label-outline-default">1</span> 
 						choose your portrait
 					</h3>
@@ -127,7 +124,17 @@
 					<label for="myPortraitSelector" class="btn btn-danger"><i class="fa fa-upload" aria-hidden="true"></i>
 						select
 					</label>
-					<br/><br/>
+					<div class="portraitZoomer">
+						<button id="zoomplus" class="btn btn-success"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
+						<button id="zoomminus" class="btn btn-success"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
+					</div>
+
+					<div id="croppingArea" class="cropping-area">
+						<div class="portraitZoomer">
+							<button id="zoomplus" class="btn btn-success"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
+							<button id="zoomminus" class="btn btn-success"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
+						</div>
+					</div>					
 
 					<h3><span class="label label-outline-default">3</span> generate </h3>					
 					<button class="btn btn-success disabled" id="genBtn">
@@ -137,40 +144,17 @@
 				</div>
 				
 				<!--just for DEV testcases-->
-				<!-- <a id="dwlDreadLink" href="#" target="_blank">
+				<a id="dwlDreadLink" href="#" target="_blank">
 					<canvas id="canvas" width="900px" height="600px" style="border:1px dotted red" />
-				</a> -->
+				</a>
 			</div>
 
 			<div class="col-md-4"  style="padding-left: 0PX !important;">
-				<h3 class="special-header row"><span class="label label-outline-default">2</span> choos your dreads</h3>										
+				<h3><span class="label label-outline-default">2</span> choos your dreads</h3>										
 				
 				<div id="dreadSelectionList" class="row teststyle" />
             </div>   			
-		</div>
-
-		<!--Modal Output-->
-		<div id="outputModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">	
-						<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-								<h3>Generated DreadHead</h3>
-						</div>
-						<div class="modal-body">
-							<canvas id="canvas" width="800px" height="600px" />
-						</div>
-						<div class="modal-footer">
-							<button id="shareBtn" type="button" class="btn btn-info"><i class="fa fa-share-alt" aria-hidden="true"></i>
-								share
-							</button>							
-							<button id="dwlBtn" class="btn btn-success" target="_blank"><i class="fa fa-download" aria-hidden="true"></i>
-								download
-							</button>
-						</div>
-					</div>
-				</div>	
-			</div>
+		</div>		
 	</div>
   <!-- end of container -->
 
