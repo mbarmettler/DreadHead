@@ -13,7 +13,7 @@ var ftpPathToThumbDreads = "Assets/img/dreads/thumbs/";
 var orginalPortraitWidth = 0;
 var scaleddownMaxPortraitwidth = 0;
 var portraitexiforientation = -1;
-var rotationDegree = 0;
+var portraitRotationDegree = 0;
 var currentPortraitScale = 1.0;
 
 //
@@ -72,11 +72,11 @@ $(function () {
         $("#zoomplus").on("click", function(e){
 			var newValue = currentPortraitScale + 0.15;
 			$('#userPortrait').css({
-			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-o-transform'      : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'transform'         : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)'
+			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
+			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
+			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
+			'-o-transform'      : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
+			'transform'         : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)'
 			});
 			currentPortraitScale = newValue;
 		});
@@ -84,11 +84,11 @@ $(function () {
 		$("#zoomminus").on("click", function(e){
 			var newValue = currentPortraitScale - 0.15;
 			$('#userPortrait').css({
-			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)',
-			'-o-transform'      : 'scale(' + newValue + ')  rotate('+ rotationDegree +'deg)',
-			'transform'         : 'scale(' + newValue + ') rotate('+ rotationDegree +'deg)'
+			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
+			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
+			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
+			'-o-transform'      : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
+			'transform'         : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)'
 			});
 			currentPortraitScale = newValue;
         });
@@ -225,29 +225,32 @@ function readImage (file) {
 
             //exif metadata rotation applying
             switch (portraitexiforientation) {
+                case -1:
+                portraitRotationDegree = 0;
+                    break;
                 case 1:
-                rotationDegree = 0;
+                portraitRotationDegree = 0;
                     break;
                 case 2:
-                rotationDegree = 0;
+                portraitRotationDegree = 0;
                     break;
                 case 3:
-                rotationDegree = 180;
+                portraitRotationDegree = 180;
                     break;
                 case 4:
-                rotationDegree = 180;
+                portraitRotationDegree = 180;
                     break;
                 case 5:
-                rotationDegree = 90;
+                portraitRotationDegree = 90;
                     break;
                 case 6:
-                rotationDegree = 90;
+                portraitRotationDegree = 90;
                     break;
                 case 7:
-                rotationDegree = 270;
+                portraitRotationDegree = 270;
                     break;
                 case 8:
-                rotationDegree = 270;
+                portraitRotationDegree = 270;
                     break;
             }
 
@@ -262,8 +265,8 @@ function readImage (file) {
 			var portraitwidth = $("#userPortrait").width();
             var portraitheight = $("#userPortrait").height();
             
-            if(rotationDegree > 0) {
-                $(this).css('transform', 'rotate('+ rotationDegree +'deg)')
+            if(portraitRotationDegree > 0) {
+                $(this).css('transform', 'rotate('+ portraitRotationDegree +'deg)')
                 //switch height and width after rotated
                 //todo - do this in switch case degree
                 portraitwidth = $("#userPortrait").height();
@@ -308,6 +311,8 @@ function generateImage()
 {    
     var ratioDread = 0;    
     var ratioPortrait = 0;
+    var portraitAngle = 0;
+    var dreadAngle = 0;
 
     var potraitWidth = $("#userPortrait").width()*currentPortraitScale;
     var potraitHeight = $("#userPortrait").height()*currentPortraitScale;
@@ -318,8 +323,8 @@ function generateImage()
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
 
-    var dreadAngle = getCurrentRotationFixed("userDreads", true);
-    var portraitAngle = getCurrentRotationFixed("userPortrait", false); 
+    dreadAngle = getCurrentRotationFixed("userDreads", true);
+    portraitAngle = getCurrentRotationFixed("userPortrait", false); 
 
     //Forces it to be parsed as a decimal number, otherwise strings beginning with '0' might be parsed as an octal number 
     //(might depend on the browser used)
@@ -360,7 +365,7 @@ function generateImage()
         .drawImage({
             source: portrait,	
             x: 250,
-            y: 250,
+            y: 300,
             width: potraitWidth,
             height: potraitHeight,
             index: 0,
@@ -368,8 +373,8 @@ function generateImage()
         })
         .drawImage({
             source: dread,
-            x: dreadLeftPos-(portraitLeftPos),
-            y: dreadTopPos,					
+            x: dreadLeftPos-50,
+            y: dreadTopPos+250,					
             width: dreadwidth,
             height: dreadHeight,
             rotate: dreadAngle
@@ -434,7 +439,7 @@ function preRotateImage(file)
 }
 
 //calculates Degree value of Rotation Transformation Matrix (css helper)
-function getCurrentRotationFixed( elid, searchOnParent) 
+function getCurrentRotationFixed(elid, searchOnParent) 
 {
     var el;
     var st;
@@ -492,6 +497,6 @@ function getCurrentRotationFixed( elid, searchOnParent)
     }
   
     // works!
-    //console.log('Rotate: ' + angle + 'deg');
+    console.log('Rotate: ' + angle + 'deg');
     return angle;   
   }
