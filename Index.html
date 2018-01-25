@@ -47,62 +47,6 @@
 
 	<!-- site scripts -->
 	<script src="Assets/js/site.js"></script>
-
-	<script>
-		$(function () {			
-
-			//init DreadSelectionList
-			initializeDreadSelectionList(dreadSelectionArray);		
-										
-			//generate image with watermark & download image locally
-			$("#genBtn").on("click", function(e) {
-				e.preventDefault();  //stop the browser from following
-
-				generateImage();
-
-				$("#outputModal").modal("show");
-			});
-
-			//share image
-			$("#shareBtn").on("click", function (e) {
-				e.preventDefault();  //stop the browser from following
-				
-			});			
-
-			//download image
-			$("#dwlBtn").on("click", function (e) {
-				e.preventDefault();  //stop the browser from following
-
-				downloadImage(this, "canvas", 'dreadhead.png');
-
-				   
-				//var canvassource = $("#canvas").getCanvasImage('png');
-				
-				// console.log(e);				
-				// console.log(canvassource);
-
-				//e.currentTarget.attr("href", canvassource);
-			});			
-
-			function downloadImage(link, canvasId, filename){
-				link.href = document.getElementById(canvasId).toDataURL();
-				link.download = filename;
-			}
-	
-		//end of doc ready
-		});
-		
-	</script>
-<style>
-/* .teststyle {  
-		display: -webkit-box;
-		display: -moz-box;
-		display: -ms-flexbox;
-		display: -webkit-flex;
-		display: flex;
-		flex:1 0 auto;
-	} */
-	</style>
 </head>
 
 <body>	
@@ -150,9 +94,9 @@
 			</div>
 
 			<div class="col-md-4"  style="padding-left: 0PX !important;">
-				<h3><span class="label label-outline-default">2</span> choos your dreads</h3>										
+				<h3 style="margin-top:0px;"><span class="label label-outline-default">2</span> choos your dreads</h3>										
 				
-				<div id="dreadSelectionList" class="row teststyle" />
+				<div id="dreadSelectionList" class="row" />
             </div>   			
 		</div>		
 	</div>

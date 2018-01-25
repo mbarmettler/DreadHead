@@ -4,9 +4,10 @@
 ////////////////////////////////////////////////////
 
 //specify Dread Hair images on web folder /img/dreads/
-var dreadSelectionArray = ["Dreads (1).png", "Dreads (2).png", "Dreads (3).png", "Dreads (4).png", "Dreads (5).png", "Dreads (6).png", "Dreads (7).png", "Dreads (8).png", "Dreads (9).png", "Dreads (10).png", "Dreads (11).png", "Dreads (12).png", "Dreads (13).png", "Dreads (14).png", "Dreads (15).png", "Dreads (16).png", "Dreads (17).png"];
+var dreadSelectionArray = ["Dreads(1).png", "Dreads(2).png", "Dreads(3).png", "Dreads(4).png", "Dreads(5).png", "Dreads(6).png", "Dreads(7).png", "Dreads(8).png", "Dreads(9).png", "Dreads(10).png", "Dreads(11).png", "Dreads(12).png", "Dreads(13).png", "Dreads(14).png", "Dreads(15).png", "Dreads(16).png", "Dreads(17).png"];
 //Path on FTP to the orginal Dreard photos
-var ftpPathToOrginalDreads = "Assets/img/dreads/"
+var ftpPathToOrginalDreads = "Assets/img/dreads/";
+var ftpPathToThumbDreads = "Assets/img/dreads/thumbs/";
 
 //global variables for image editing/sizing/transform
 var orginalPortraitWidth = 0;
@@ -19,7 +20,10 @@ var currentPortraitScale = 1.0;
 //Main function
 //
 $(function () {		
-    
+
+        //init DreadSelectionList
+		initializeDreadSelectionList(dreadSelectionArray);		
+						
         //User portrait image changed / selected
         $("input:file").change(function () {
         
@@ -64,10 +68,7 @@ $(function () {
                 alert(errors); 
             }
         });
-    
-        //initialize DreadSelectionList
-        initializeDreadSelectionList(dreadSelectionArray);
-        
+           
         $("#zoomplus").on("click", function(e){
 			var newValue = currentPortraitScale + 0.15;
 			$('#userPortrait').css({
@@ -91,11 +92,30 @@ $(function () {
 			});
 			currentPortraitScale = newValue;
         });
-        
-  
 
-        //selecting dreads and add to cropping area
-		$(".thumbnail").on("click", function(){	
+        //generate image with watermark & download image locally
+        $("#genBtn").on("click", function(e) {
+            e.preventDefault();  //stop the browser from following
+
+            generateImage();				
+        });
+
+        //download image
+        $("#dwlBtn").on("click", function (e) {
+            e.preventDefault();  //stop the browser from following
+
+            downloadImage(this, "canvas", 'dreadhead.png');
+
+            //var canvassource = $("#canvas").getCanvasImage('png');
+            
+            // console.log(e);				
+            // console.log(canvassource);
+
+            //e.currentTarget.attr("href", canvassource);
+        });			
+
+        // //selecting dreads and add to cropping area
+		$(".thumbnail").on("click",function(){	
 			if(!$(this).hasClass('active'))
 			{ 		
 				$(".thumbnail").removeClass("active");
@@ -116,62 +136,62 @@ $(function () {
                 id: 'userDreads',
                 src: orginalDreadImgSrc,
                 alt: 'dreadcanvas'
-              }).prependTo($('#croppingArea'));
+              });            
 
-            var ratio = 0; 
-            var width = $("#userDreads").width();    // Current image width
-            var height = $("#userDreads").height();  // Current image height
-            var maxWidth = $("#croppingArea").width();
-            var maxHeight = $("#croppingArea").height();
+            //important - wait for the image is loaded
+            img.on('load', function(){       
+                img.prependTo($('#croppingArea'));
 
-//Check if the current width is larger than the max
-// if(width > maxWidth){
-//     ratio = maxWidth / width;   // get ratio for scaling image
-//     $("#userDreads").css("width", maxWidth); // Set new width
-//     height = height * ratio;    // Reset height to match scaled image
-//     $("#userDreads").css("height", height);  // Scale height based on ratio   
-// }
-// Check if current height is larger than max
-if(height > maxHeight){
-    ratio = maxHeight / height; // get ratio for scaling image
-    $("#userDreads").css("height", maxHeight);   // Set new height
-    width = width * ratio;    // Reset width to match scaled image    
-    $("#userDreads").css("width", width);    // Scale width based on ratio
-}
+                var ratio = 0; 
+                var width = $("#userDreads").width();    // Current image width
+                var height = $("#userDreads").height();  // Current image height
+                var maxWidth = $("#croppingArea").width();
+                var maxHeight = $("#croppingArea").height();
 
-            //rotatable Options - defines angle of rotation
-			var options = {
-			  rotationCenterOffset: {
-					top: 0,
-					left: 0
-				}
-			};
+                if(height > maxHeight){
+                    ratio = maxHeight / height; // get ratio for scaling image
+                    $("#userDreads").css("height", maxHeight);   // Set new height
+                    width = width * ratio;    // Reset width to match scaled image    
+                    $("#userDreads").css("width", width);    // Scale width based on ratio
+                }
+                //Check if the current width is larger than the max
+                // if(width > maxWidth){
+                //     ratio = maxWidth / width;   // get ratio for scaling image
+                //     $("#userDreads").css("width", maxWidth); // Set new width
+                //     height = height * ratio;    // Reset height to match scaled image
+                //     $("#userDreads").css("height", height);  // Scale height based on ratio   
+                // }			
 
-            //resizable events
-            // ,
-            // create: function(event, ui){
-            //     console.log("create resizable")                  
-            // },
-            // resize: function( event, ui ) {
-            //     console.log("resize event")
-            //   }
-
-			//adding img editing options				
-			$("#userDreads").resizable({ handles: "ne" });            
-            $("#userDreads").parent().rotatable(options);
-			$("#userDreads").parent().css("z-index", 1);
-			$("#userDreads").parent().draggable({ appendTo: '#croppingArea', scroll:true });		
-
-			//place rotatable icon on top left
-			$(".ui-rotatable-handle").prependTo(".ui-wrapper");
-
-			//enable functional buttons
-			$('.btn').removeClass("disabled");		
+                //rotatable Options - defines angle of rotation
+                var options = {
+                    rotationCenterOffset: {
+                          top: 0,
+                          left: 0
+                      }
+                  };
+            
+                  //adding img editing options				
+                  $("#userDreads").resizable({ handles: "ne" });            
+                  $("#userDreads").parent().rotatable(options);
+                  $("#userDreads").parent().css("z-index", 1);
+                  $("#userDreads").parent().draggable({ appendTo: '#croppingArea', scroll:true });		
+      
+                  //place rotatable icon on top left
+                  $(".ui-rotatable-handle").prependTo(".ui-wrapper");
+      
+                  //enable functional buttons
+                  $('.btn').removeClass("disabled");	
+              });
 		});		
         
         // end document ready
     });
 //
+
+function downloadImage(link, canvasId, filename){
+    link.href = document.getElementById(canvasId).toDataURL();
+    link.download = filename;
+}
 
 //File selection dialog with Filereader and exception handling
 var useBlob = false && window.URL;
@@ -274,54 +294,46 @@ function readImage (file) {
 }
 
 function initializeDreadSelectionList(dreadSelectionArray) {
-    dreadSelectionArray.forEach(function (item, index, array) {
-        $("#dreadSelectionList").append('<div class="col-lg-4 col-sm-4 co-xs-12"><a href="#" class="thumbnail"><img class="img-thumbnail img-responsive" src="Assets/img/dreads/thumbs/' + item + '"/></a></div>');
+    $.each(dreadSelectionArray, function (index, item) {
+        $("#dreadSelectionList").append(
+            '<div class="col-lg-4 col-sm-4 co-xs-12"><a href="#" class="thumbnail"><img class="img-thumbnail img-responsive" src="'
+        + ftpPathToThumbDreads + item + '"/></a></div>');
+        
+        // console.log(item);
     });
 }
 
 //generates Result Image (JCanvas)
 function generateImage()
 {    
+    var ratioDread = 0;    
+    var ratioPortrait = 0;
+
+    var potraitWidth = $("#userPortrait").width()*currentPortraitScale;
+    var potraitHeight = $("#userPortrait").height()*currentPortraitScale;
+
     var dread = $("#userDreads").attr("src");
     var portrait = $("#userPortrait").attr('src');
-
-    var userDreadAngle = getCurrentRotationFixed("userDreads", true);
-    var portraitAngle = getCurrentRotationFixed("userPortrait", false);
-        
-    //Forces it to be parsed as a decimal number, otherwise strings beginning with '0' might be parsed as an octal number 
-    //(might depend on the browser used)
-    var dreadLeftPos = parseInt($("#userDreads").parent(".ui-wrapper").css("left"), 10);
-    var dreadTopPos = parseInt($('#userDreads').parent(".ui-wrapper").css('top'), 10);
-    //console.log(dreadLeftPos);
-    //console.log(dreadTopPos);
 
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
 
-    var ratioDread = 0;    
-    var ratioPortrait = 0;
+    var dreadAngle = getCurrentRotationFixed("userDreads", true);
+    var portraitAngle = getCurrentRotationFixed("userPortrait", false); 
 
-    var potraitWidth = 0;
-    var potraitHeight = 0;
+    //Forces it to be parsed as a decimal number, otherwise strings beginning with '0' might be parsed as an octal number 
+    //(might depend on the browser used)
+    var dreadLeftPos = parseInt($("#userDreads").parent(".ui-wrapper").css("left"), 10);
+    var dreadTopPos = parseInt($('#userDreads').parent(".ui-wrapper").css('top'), 10);
 
-    //portrait is prerotated by App
-    if(portraitAngle > 0){        
-        if($("#userPortrait").width() > $("#userPortrait").height()){
-            potraitWidth =  $("#userPortrait").width()*currentPortraitScale;;
-            potraitHeight =  $("#userPortrait").height()*currentPortraitScale;;
-            ratioPortrait =  potraitWidth / potraitHeight;
-        }
-        else{
-            potraitWidth = $("#userPortrait").height();
-            potraitHeight = $("#userPortrait").width();
-            ratioPortrait = potraitHeight / potraitWidth;
-        }
-    }
-    else{
-        potraitWidth =  $("#userPortrait").width()*currentPortraitScale;
-        potraitHeight =  $("#userPortrait").height()*currentPortraitScale;
-    }
+    var portraitLeftPos = parseInt($("#userPortrait").css("left"), 10);
+    var portraitTopPos = parseInt($('#userPortrait').css('top'), 10);
 
+        
+    console.log("portrait left" + portraitLeftPos);
+    console.log("portrait top" + portraitTopPos);
+    console.log(dreadLeftPos);
+    console.log(dreadTopPos);
    
     if($("#userDreads").width() > $("#userDreads").height())
     {
@@ -356,11 +368,11 @@ function generateImage()
         })
         .drawImage({
             source: dread,
-            x: dreadTopPos+220,
-            y: dreadLeftPos-30,					
+            x: dreadLeftPos-(portraitLeftPos),
+            y: dreadTopPos,					
             width: dreadwidth,
             height: dreadHeight,
-            rotate: userDreadAngle
+            rotate: dreadAngle
         })
         .drawImage({
             source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
