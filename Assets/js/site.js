@@ -4,7 +4,7 @@
 ////////////////////////////////////////////////////
 
 //specify Dread Hair images on web folder /img/dreads/
-var dreadSelectionArray = ["Dreads(1).png", "Dreads(2).png", "Dreads(3).png", "Dreads(4).png", "Dreads(5).png", "Dreads(6).png", "Dreads(7).png", "Dreads(8).png", "Dreads(9).png", "Dreads(10).png", "Dreads(11).png", "Dreads(12).png", "Dreads(13).png", "Dreads(14).png", "Dreads(15).png", "Dreads(16).png", "Dreads(17).png"];
+var dreadSelectionArray = ["Dreads(1).png", "Dreads(2).png", "Dreads(3).png", "Dreads(4).png", "Dreads(5).png", "Dreads(6).png", "Dreads(7).png", "Dreads(8).png", "Dreads(9).png", "Dreads(10).png", "Dreads(11).png", "Dreads(12).png", "Dreads(13).png", "Dreads(14).png", "Dreads(15).png", "Dreads(16).png", "Dreads(17).png", "Dreads(18).png", "Dreads(19).png", "Dreads(20).png","Dreads(21).png", "Dreads(22).png", "Dreads(23).png"];
 //Path on FTP to the orginal Dreard photos
 var ftpPathToOrginalDreads = "Assets/img/dreads/";
 var ftpPathToThumbDreads = "Assets/img/dreads/thumbs/";
@@ -78,7 +78,9 @@ $(function () {
 			'-o-transform'      : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
 			'transform'         : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)'
 			});
-			currentPortraitScale = newValue;
+            currentPortraitScale = newValue;
+            //positioning optimization
+            $('#userPortrait').css("top", "0px");
 		});
 
 		$("#zoomminus").on("click", function(e){
@@ -90,29 +92,36 @@ $(function () {
 			'-o-transform'      : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
 			'transform'         : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)'
 			});
-			currentPortraitScale = newValue;
+            currentPortraitScale = newValue;        
+            //positioning optimization    
+            $('#userPortrait').css("top", "0px");
         });
 
         //generate image with watermark & download image locally
         $("#genBtn").on("click", function(e) {
             e.preventDefault();  //stop the browser from following
 
-            generateImage();				
-        });
+            generateImage();	
+            var canvassource = $("canvas").getCanvasImage('png');          
 
-        //download image
-        $("#dwlBtn").on("click", function (e) {
-            e.preventDefault();  //stop the browser from following
+            var save = document.createElement('a');
+            save.href = canvassource;
+            save.download = 'myDreadHead.png' || 'unknown';
+            //hidden link for download png
+            save.style = 'display:none;opacity:0;color:transparent;';
+            (document.body || document.documentElement).appendChild(save);
 
-            downloadImage(this, "canvas", 'dreadhead.png');
+            if (typeof save.click === 'function') {
+                save.click();
+            } else {
+                save.target = '_blank';
+                var event = document.createEvent('Event');
+                event.initEvent('click', true, true);
+                save.dispatchEvent(event);
+            }
 
-            //var canvassource = $("#canvas").getCanvasImage('png');
-            
-            // console.log(e);				
-            // console.log(canvassource);
-
-            //e.currentTarget.attr("href", canvassource);
-        });			
+            (window.URL || window.webkitURL).revokeObjectURL(save.href);
+        });        
 
         // //selecting dreads and add to cropping area
 		$(".thumbnail").on("click",function(){	
@@ -187,6 +196,7 @@ $(function () {
         // end document ready
     });
 //
+
 
 function downloadImage(link, canvasId, filename){
     link.href = document.getElementById(canvasId).toDataURL();
