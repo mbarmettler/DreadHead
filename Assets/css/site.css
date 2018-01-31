@@ -4,12 +4,15 @@
 	.container-fluid{
 		width:auto;
 	}
+	.jumbotron {
+		height: 50%;
+		}
 }
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px){
-.modal-dialog {
-	width: 850px;
+.jumbotron {
+	height: 50%;
 	}
 }
 /* Medium devices (desktops, 992px and up) */

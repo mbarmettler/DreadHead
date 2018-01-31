@@ -1,0 +1,10 @@
+{ "deploy": {
+            "targets":
+            [{  
+                "type": "local",
+                "name": "Deploy to XAMPP",
+                "description": "A local folder",
+                "dir": "C:\\xampp\\htdocs\\dreadhead"
+            }]
+    }
+}

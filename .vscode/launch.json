@@ -17,8 +17,7 @@
             "name": "Launch localhost",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:8050/dreadhead/index.html",
-            "webRoot": "${workspaceRoot}/wwwroot"
+            "url": "http://localhost:8050/dreadhead/index.html"//,            "webRoot": "${workspaceRoot}/wwwroot"
         },
         {
             "name": "Launch index.html (disable sourcemaps)",
@@ -27,5 +26,5 @@
             "sourceMaps": false,
             "file": "${workspaceRoot}/index.html"
         }
-    ]
+    ]   
 }

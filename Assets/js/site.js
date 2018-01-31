@@ -106,7 +106,7 @@ $(function () {
 
             var save = document.createElement('a');
             save.href = canvassource;
-            save.download = 'myDreadHead.png' || 'unknown';
+            save.download = 'myDreadHead.png';
             //hidden link for download png
             save.style = 'display:none;opacity:0;color:transparent;';
             (document.body || document.documentElement).appendChild(save);
@@ -283,6 +283,7 @@ function readImage (file) {
                 portraitheight = $("#userPortrait").width();
              }
 
+             //reset width to cropping width
             $("#userPortrait").width($("#croppingArea").width());
 
 			//adding resizing and dragging
@@ -327,6 +328,10 @@ function generateImage()
     var potraitWidth = $("#userPortrait").width()*currentPortraitScale;
     var potraitHeight = $("#userPortrait").height()*currentPortraitScale;
 
+    console.log("=====portrait dim=======")
+    console.log(potraitWidth);
+    console.log(potraitHeight);
+
     var dread = $("#userDreads").attr("src");
     var portrait = $("#userPortrait").attr('src');
 
@@ -343,68 +348,58 @@ function generateImage()
 
     var portraitLeftPos = parseInt($("#userPortrait").css("left"), 10);
     var portraitTopPos = parseInt($('#userPortrait').css('top'), 10);
-
         
-    console.log("portrait left" + portraitLeftPos);
-    console.log("portrait top" + portraitTopPos);
+    console.log("=====dreadpos l-t =======")
     console.log(dreadLeftPos);
     console.log(dreadTopPos);
-   
-    if($("#userDreads").width() > $("#userDreads").height())
-    {
-        ratioDread =  dreadwidth / dreadHeight;
-    }
-    if($("#userDreads").height() > $("#userDreads").width())
-    {
-        ratioDread = dreadHeight / dreadwidth;
-    }
+    console.log("======potrtraitpos l-t ======")
+    console.log(portraitLeftPos);
+    console.log(portraitTopPos);    
 
     //clear canvas before rendering
     $("#canvas").clearCanvas();
 
-    // .drawImage({
-    //     source: dread,
-    //     x: (dreadwidth/ratioDread),
-    //     y: (dreadHeight/ratioDread),					
-    //     width: dreadwidth,
-    //     height: dreadHeight,
-    //     rotate: userDreadAngle
-    // })
-
     $("#canvas")
         .drawImage({
             source: portrait,	
-            x: 250,
-            y: 300,
+            x: 20,
+            y: 40,
             width: potraitWidth,
             height: potraitHeight,
             index: 0,
-            rotate: portraitAngle
+            rotate: portraitAngle,
+            fromCenter: false
         })
         .drawImage({
             source: dread,
-            x: dreadLeftPos-50,
-            y: dreadTopPos+250,					
+            x: dreadLeftPos-40,
+            y: dreadTopPos+40,					
             width: dreadwidth,
             height: dreadHeight,
-            rotate: dreadAngle
+            rotate: dreadAngle,            
+            index: 2, 
+            fromCenter: false
         })
         .drawImage({
             source: "http://dreadlocks-artesanal.ch/dreadhead/Assets/img/corp/logo.png",
-            x: 50,
-            y: 50,
+            x: 20,
+            y: 20,
             width: 90,
-            height: 90
+            height: 90,
+            index: 1, 
+            fromCenter: false
         })
         .drawText({
             font: '13pt sans-serif',
             fillStyle: '#333333',
             strokeStyle: '#75a62b',
-            x: 90,	
-            y: 550,
+            x: 20,	
+            y: 560,
             align: 'left',
             strokeWidth: 1,
-            text: "dreadlocks-artesenal.ch"
+            text: "dreadlocks-artesenal.ch",            
+            index: 1, 
+            fromCenter: false
         }).restoreCanvas();           
 }
 
@@ -507,6 +502,6 @@ function getCurrentRotationFixed(elid, searchOnParent)
     }
   
     // works!
-    console.log('Rotate: ' + angle + 'deg');
+    //console.log('Rotate: ' + angle + 'deg');
     return angle;   
   }
