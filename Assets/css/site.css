@@ -7,21 +7,36 @@
 	.jumbotron {
 		height: 50%;
 		}
+	#dreadSelectionList {
+		overflow: auto;
+		display: flex;
+	}
 }
+
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px){
-.jumbotron {
-	height: 50%;
+	.jumbotron {
+		height: 50%;
+	}
+	#dreadSelectionList {
+		overflow: auto;
+		display: flex;
 	}
 }
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) { 
-	
+	#dreadSelectionList {
+		overflow: auto;
+		display: inline-block;
+	}
 }
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) { 
-	
+	#dreadSelectionList {
+		max-height: 850px;
+		display: inline-block;
+	}
 }
 
 .jumbotron {
