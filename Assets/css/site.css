@@ -11,6 +11,9 @@
 		overflow: auto;
 		display: flex;
 	}
+	.userportrait{
+		transform: scale(0.7) rotate(0deg);
+	}
 }
 
 
@@ -29,6 +32,7 @@
 	#dreadSelectionList {
 		overflow: auto;
 		display: inline-block;
+		max-height: 800px;
 	}
 }
 /* Large devices (large desktops, 1200px and up) */
@@ -63,10 +67,10 @@ h3 {
 	z-index: -1;
 }
 
-.cropping-area {    
+.croppingArea {    
 	position: relative;
 	overflow: hidden;
-	margin-top:10px;
+	margin:10px;
 	padding: 40px;
 	border-style: dashed;
 	border-width: 2px;
@@ -74,8 +78,13 @@ h3 {
 	background: white;
 	height: 600px;
 	flex: 1;
-    align-items: center;
  }
+
+.portraitWrapper
+{
+	z-index: 10;
+	position: static;
+}
 
 #userDreads{
 	cursor: move;
@@ -83,7 +92,7 @@ h3 {
 	min-width: 150px;
 	z-index: 2;
 }
-#userPortrait{	
+#userPortrait, .userportrait{	
 	top:0;
 	right:0;
 	cursor: move;
@@ -91,12 +100,17 @@ h3 {
 	z-index: 0;
 }
 
+.uploadButton{
+	width: -webkit-fill-available;
+    max-width: 250px;
+}
 .portraitZoomer{
 	display: none;
 	position: absolute;
-	top: 10%;
-	left: 10%;
-	z-index: 22;
+}
+.portraitZoomer > p{
+	margin-top:20px;
+	margin-bottom:0Px!important;
 }
 
 canvas{
@@ -130,6 +144,28 @@ canvas{
 	right: 5px;
     top: 5px;
 	background-image: url(../img/resize.png);
+}
+/* 
+.ui-resizable-handle{
+position:relative;
+}
+.ui-resizable-handle:before{
+	content:    "\f021";
+	font-family: FontAwesome;
+} */
+
+.btn-circle {
+	width: 30px;
+	height: 30px;
+	text-align: center;
+	padding: 6px 0;
+	font-size: 12px;
+	line-height: 1.428571429;
+	border-radius: 15px;
+  }
+  .btn-circle:hover
+{
+    background-color: #BADA55;
 }
 
 /*dread selection styles*/

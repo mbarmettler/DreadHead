@@ -8,13 +8,13 @@
         {
             "type": "PowerShell",
             "request": "launch",
-            "name": "PS Deploy",
+            "name": "PS Deploy to xampp",
             "script": "${workspaceRoot}\\.vscode\\deploy.ps1",
             "args": [],
             "cwd": "${workspaceRoot}"
         },
         {
-            "name": "Launch localhost",
+            "name": "Launch xampp localhost",
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:8050/dreadhead/index.html"//,            "webRoot": "${workspaceRoot}/wwwroot"

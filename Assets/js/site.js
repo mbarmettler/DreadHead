@@ -23,7 +23,7 @@ $(function () {
 
         //init DreadSelectionList
 		initializeDreadSelectionList(dreadSelectionArray);		
-						
+
         //User portrait image changed / selected
         $("input:file").change(function () {
         
@@ -97,9 +97,33 @@ $(function () {
             $('#userPortrait').css("top", "0px");
         });
 
+        $(".btn-circle-up").on("click",function(){
+            var n = $("#userPortrait");           
+            n.css('top', (parseFloat(n.css('top')) - 10) + 'px');
+        });
+
+        $(".btn-circle-down").on("click",function(){            
+            var n = $("#userPortrait");           
+            n.css('top', (parseFloat(n.css('top')) + 10) + 'px');
+        });
+
+        $(".btn-circle-left").on("click",function(){            
+            var n = $("#userPortrait");           
+            n.css('right', (parseFloat(n.css('right')) + 10) + 'px');
+        });
+
+        $(".btn-circle-right").on("click",function(){            
+            var n = $("#userPortrait");           
+            n.css('right', (parseFloat(n.css('right')) - 10) + 'px');
+        });
+
         //generate image with watermark & download image locally
         $("#genBtn").on("click", function(e) {
             e.preventDefault();  //stop the browser from following
+
+            //start loading indicator on button
+            var $genBtn = $("#genBtn");
+            $genBtn.button('loading');
 
             generateImage();	
             var canvassource = $("canvas").getCanvasImage('png');          
@@ -121,6 +145,7 @@ $(function () {
             }
 
             (window.URL || window.webkitURL).revokeObjectURL(save.href);
+            $genBtn.button('reset');
         });        
 
         // //selecting dreads and add to cropping area
@@ -145,11 +170,14 @@ $(function () {
                 id: 'userDreads',
                 src: orginalDreadImgSrc,
                 alt: 'dreadcanvas'
-              });            
+              });                       
+
+            var loadingHtmlstring = "<div id='loading'><p><img src='Assets/img/busy.gif'/> Please Wait</p></div>";
 
             //important - wait for the image is loaded
             img.on('load', function(){       
                 img.prependTo($('#croppingArea'));
+                $(".ui-wrapper").append(loadingHtmlstring);
 
                 var ratio = 0; 
                 var width = $("#userDreads").width();    // Current image width
@@ -191,6 +219,8 @@ $(function () {
                   //enable functional buttons
                   $('.btn').removeClass("disabled");	
               });
+
+              $("#loading").remove();;
 		});		
         
         // end document ready
@@ -215,7 +245,7 @@ function readImage (file) {
     //affects initial rotation
     preRotateImage(file);
 
-// Once a file is successfully readed:
+    // Once a file is successfully readed:
 	reader.addEventListener("load", function () {
 	    // At this point `reader.result` contains already the Base64 Data-URL
 		// and we've could immediately show an image using
@@ -228,10 +258,8 @@ function readImage (file) {
 		image.crossOrigin = "anonymous";
 		image.addEventListener("load", function () {
 
-            var croppingWidth = $("#croppingArea").width();
-
             //remove old images
-            $("#croppingArea").empty();       
+            // $("#croppingArea").empty();       
 
             //exif metadata rotation applying
             switch (portraitexiforientation) {
@@ -265,9 +293,11 @@ function readImage (file) {
             }
 
             $(this).prop("id", "userPortrait");	        
-                            
+            
+            $(".croppingArea").empty();
+
 			// Finally append our created image 
-			$("#croppingArea").append(this);		
+            $("#croppingArea").append(this);
 
             //activate zoom buttons
             $(".portraitZoomer").css("display", "inline-block");
@@ -310,7 +340,7 @@ function readImage (file) {
 function initializeDreadSelectionList(dreadSelectionArray) {
     $.each(dreadSelectionArray, function (index, item) {
         $("#dreadSelectionList").append(
-            '<div class="col-lg-4 col-sm-4 co-xs-12"><a href="#" class="thumbnail"><img class="img-thumbnail img-responsive" src="'
+            '<div class="col-lg-4 col-sm-6 col-xs-6"><a href="#" class="thumbnail"><img class="img-thumbnail img-responsive" src="'
         + ftpPathToThumbDreads + item + '"/></a></div>');
         
         // console.log(item);
@@ -337,6 +367,8 @@ function generateImage()
 
     var dreadwidth = $("#userDreads").width();
     var dreadHeight = $("#userDreads").height();
+
+    $("#canvas").attr("width", potraitWidth);
 
     dreadAngle = getCurrentRotationFixed("userDreads", true);
     portraitAngle = getCurrentRotationFixed("userPortrait", false); 
