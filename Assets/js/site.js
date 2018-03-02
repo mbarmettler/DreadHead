@@ -32,6 +32,8 @@ $(function () {
             var files  = this.files;
             // Let's create an empty `errors` String to collect eventual errors into:
             var errors = "";
+
+            portraitRotationDegree = 0;
     
             if (!files) {
                 errors += "File upload not supported by your browser.";
@@ -71,29 +73,19 @@ $(function () {
            
         $("#zoomplus").on("click", function(e){
 			var newValue = currentPortraitScale + 0.15;
-			$('#userPortrait').css({
-			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
-			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
-			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
-			'-o-transform'      : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
-			'transform'         : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)'
-			});
-            currentPortraitScale = newValue;
-            //positioning optimization
+            var n = $('#userPortrait');
+            var oldwidth = parseFloat(n.css("width"));            
+            var newWidth = oldwidth*newValue + "px";
+            $('#userPortrait').css("width", newWidth);
             $('#userPortrait').css("top", "0px");
 		});
 
 		$("#zoomminus").on("click", function(e){
 			var newValue = currentPortraitScale - 0.15;
-			$('#userPortrait').css({
-			'-webkit-transform' : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
-			'-moz-transform'    : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
-			'-ms-transform'     : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
-			'-o-transform'      : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)',
-			'transform'         : 'scale(' + newValue + ') rotate('+ portraitRotationDegree +'deg)'
-			});
-            currentPortraitScale = newValue;        
-            //positioning optimization    
+            var n = $('#userPortrait');
+            var oldwidth = parseFloat(n.css("width"));
+            var newWidth = oldwidth*newValue + "px";
+            $('#userPortrait').css("width", newWidth);
             $('#userPortrait').css("top", "0px");
         });
 
@@ -305,16 +297,16 @@ function readImage (file) {
 			var portraitwidth = $("#userPortrait").width();
             var portraitheight = $("#userPortrait").height();
             
-            if(portraitRotationDegree > 0) {
+            if(portraitexiforientation > 4) {
                 $(this).css('transform', 'rotate('+ portraitRotationDegree +'deg)')
                 //switch height and width after rotated
                 //todo - do this in switch case degree
                 portraitwidth = $("#userPortrait").height();
-                portraitheight = $("#userPortrait").width();
+                
+                //reset width / height
+                $("#userPortrait").width(portraitwidth);
              }
 
-             //reset width to cropping width
-            $("#userPortrait").width($("#croppingArea").width());
 
 			//adding resizing and dragging
 			$("#userPortrait").draggable({ appendTo:"#croppingArea" })

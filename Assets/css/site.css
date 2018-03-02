@@ -106,7 +106,6 @@ h3 {
 }
 .portraitZoomer{
 	display: none;
-	position: absolute;
 }
 .portraitZoomer > p{
 	margin-top:20px;
